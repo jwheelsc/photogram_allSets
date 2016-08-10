@@ -23,23 +23,57 @@ if strcmp(source.String(val),'create line')
     end
 end   
 
-if strcmp(source.String(val),'append line, sort x')
+if strcmp(source.String(val),'append line')
+    
+    gip = ginput(2)
+    
+    pl1 = gip(1,:);
+    count = 1;
+    for i = 1:length(allSets)
+      p = allSets{i};
+      for j = 1:length(p)
+            pr = p-pl1;
+            elx = find(abs(pr(:,1))<2)
+            ely = find(abs(pr(:,2))<2)
+            if isempty(elx) == 0 && isempty(ely) == 0
+            	pl1A(count) = i
+                count = count+1
+                break
+          end
+      end
+    end
+    
+    pl1 = gip(2,:);
+    count = 1;
+    for i = 1:length(allSets)
+      p = allSets{i};
+      for j = 1:length(p)
+            pr = p-pl1;
+            elx = find(abs(pr(:,1))<2)
+            ely = find(abs(pr(:,2))<2)
+            if isempty(elx) == 0 && isempty(ely) == 0
+            	pl1B(count) = i
+                count = count+1
+            break
+          end
+      end
+    end
+    
+    ind = intersect(pl1A,pl1B)
+    
     h = imfreehand
-    h0 = s1{end}
+    h0 = allSets{ind}
     lin = h.getPosition
-    hArr = [h0;lin(1:end)]
-    [dv,ia] = sort(hArr(:,1))
-    allSets{end} = hArr(ia,:)
-    save(folderStr,'allSets','-append')
-end
-
-if strcmp(source.String(val),'append line, sort y')
-    h = imfreehand
-    h0 = s1{end}
-    lin = h.getPosition
-    hArr = [h0;lin(1:end,:)]
-    [dv,ia] = sort(hArr(:,2))
-    allSets{end} = hArr(ia,:)
+    
+    d1 = sqrt(sum((h0(1,end)-lin(1,1)).^2+(h0(2,end)-lin(2,1)).^2))
+    d2 = sqrt(sum((h0(1,1)-lin(1,end)).^2+(h0(2,1)-lin(2,end)).^2))
+    
+    if d1>d2
+        allSets{ind} = [h0;lin]
+    else
+        allSets{ind} = [lin;h0]
+    end
+    
     save(folderStr,'allSets','-append')
 end
 

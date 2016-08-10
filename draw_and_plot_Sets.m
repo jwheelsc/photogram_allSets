@@ -10,23 +10,24 @@ close all
 
 f1 = figure('units','normalized','outerposition',[0 0 1 1])
 imshow([folder imgNum])
-
-lxl = 826
-uxl = 3884
-lyl = 476
-uyl = 2370
-xlim([lxl uxl])
-ylim([lyl uyl])
-hold on
-plot([lxl lxl],[lyl uyl],'r-','linewidth',2)
-hold on
-plot([uxl uxl],[lyl uyl],'r-','linewidth',2)
-hold on
-plot([lxl uxl],[lyl lyl],'r-','linewidth',2)
-hold on
-plot([lxl uxl],[uyl uyl],'r-','linewidth',2)
-hold on 
-plot([uxl-141-200 uxl-200],[uyl-100 uyl-100],'y','linewidth',3)
+msf = 1/239.17
+% return
+% lxl = 826
+% uxl = 3884
+% lyl = 476
+% uyl = 2370
+% xlim([lxl uxl])
+% ylim([lyl uyl])
+% hold on
+% plot([lxl lxl],[lyl uyl],'r-','linewidth',2)
+% hold on
+% plot([uxl uxl],[lyl uyl],'r-','linewidth',2)
+% hold on
+% plot([lxl uxl],[lyl lyl],'r-','linewidth',2)
+% hold on
+% plot([lxl uxl],[uyl uyl],'r-','linewidth',2)
+% hold on 
+% plot([uxl-141-200 uxl-200],[uyl-100 uyl-100],'y','linewidth',3)
 load(folderStr)
 
 %% if you want to inititate a set, then do the following...BUT BE CAREFUL NOT TO DELETE
@@ -47,10 +48,21 @@ for i = 1:length(allSets)
 end
 
 popup = uicontrol('Style', 'popup',...
-   'String', {'create line','append line, sort x','append line, sort y','redo line','draw set'},...
+   'String', {'create line','append line','redo line','draw set'},...
    'Position', [1100 400 80 50],...
    'Callback', @draw_line_function); 
  
+xlm = get(gca,'xlim')
+ylm = get(gca,'ylim')
+
+popup = uicontrol('Style', 'popup',...
+   'String', {'full image','ul_q','ur_q','ll_q','lr_q','TOP LEFT',...
+   'move left','move right','move up','move down',...
+   'move 1 left','move 1 right','move 1 up','move 1 down'},...
+   'Position', [1100 300 80 50],...
+   'UserData', struct('xl',xlm,'yl',ylm,'scale',msf),...
+   'Callback', @window_function); 
+
 return
 
 
