@@ -13,6 +13,9 @@ while count < 100
     if length(lin(:,1))==0
         return
     end
+    if lin(1,1)>lin(end,1)
+        lin = lin(end:-1:1,:)
+    end
     %         lin = tooMuchCurvature(lin)
     allSets{end+1}= lin(:,:)
     save(folderStr,'allSets','-append')

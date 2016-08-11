@@ -8,14 +8,17 @@ ind = source.Value
 h = imfreehand;
 h0 = allSets{ind};
 lin = h.getPosition;
+if lin(1,1)>lin(end,1)
+    lin = lin(end:-1:1,:);
+end
 
-d1 = sqrt(sum((h0(1,end)-lin(1,1)).^2+(h0(2,end)-lin(2,1)).^2));
-d2 = sqrt(sum((h0(1,1)-lin(1,end)).^2+(h0(2,1)-lin(2,end)).^2));
+d1 = sqrt(sum((h0(end,1)-lin(1,1)).^2+(h0(end,2)-lin(1,2)).^2));
+d2 = sqrt(sum((h0(1,1)-lin(end,1)).^2+(h0(1,2)-lin(end,2)).^2));
 
 if d1<d2
-    allSets{ind} = [h0(1:end-5,:);lin];
+    allSets{ind} = [h0;lin];
 else
-    allSets{ind} = [lin;h0(5:end,:)];
+    allSets{ind} = [lin;h0];
 end
 
 save(folderStr,'allSets','-append')

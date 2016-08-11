@@ -11,7 +11,7 @@ source.String(val)
 
 xlm = source.UserData.xl
 ylm = source.UserData.yl
-msf = source.UserData.scale
+msfc = source.UserData.scale
 
 if strcmp(source.String(val),'full image')
 
@@ -40,64 +40,64 @@ elseif strcmp(source.String(val),'lr_q')
     
 elseif strcmp(source.String(val),'TOP LEFT')
 
-    xlim([0 (2/msf)])
-    ylim([0 (2/msf)])
+    xlim([0 (2/msfc)])
+    ylim([0 (2/msfc)])
     
 elseif strcmp(source.String(val),'move right')
     
     xl2 = get(gca,'xlim')
     yl2 = get(gca,'ylim')
-    xlim([xl2(2)-(0.25/msf) xl2(2)+(1.75/msf)])
-    ylim([0 (2/msf)])
+    xlim([xl2(2)-(0.25/msfc) xl2(2)+(1.75/msfc)])
+    ylim([0 (2/msfc)])
     
 elseif strcmp(source.String(val),'move left')
     
     xl2 = get(gca,'xlim')
     yl2 = get(gca,'ylim')
-    xlim([xl2(1)-(1.75/msf) xl2(1)+(0.25/msf)])
-    ylim([0 (2/msf)])
+    xlim([xl2(1)-(1.75/msfc) xl2(1)+(0.25/msfc)])
+    ylim([0 (2/msfc)])
     
     elseif strcmp(source.String(val),'move down')
     
     xl2 = get(gca,'xlim')
     yl2 = get(gca,'ylim')
-    ylim([yl2(2)-(0.25/msf) yl2(2)+(1.75/msf)])
-    xlim([0 (2/msf)])
+    ylim([yl2(2)-(0.25/msfc) yl2(2)+(1.75/msfc)])
+    xlim([0 (2/msfc)])
     
 elseif strcmp(source.String(val),'move up')
     
     xl2 = get(gca,'xlim')
     yl2 = get(gca,'ylim')
-    ylim([yl2(1)-(1.75/msf) yl2(1)+(0.25/msf)])
-    xlim([0 (2/msf)])
+    ylim([yl2(1)-(1.75/msfc) yl2(1)+(0.25/msfc)])
+    xlim([0 (2/msfc)])
     
     elseif strcmp(source.String(val),'move 1 right')
     
     xl2 = get(gca,'xlim')
     yl2 = get(gca,'ylim')
-    xlim([xl2(2) xl2(2)+(2/msf)])
-    ylim([0 (2/msf)])
+    xlim([xl2(2) xl2(2)+(2/msfc)])
+    ylim([0 (2/msfc)])
     
 elseif strcmp(source.String(val),'move 1 left')
     
     xl2 = get(gca,'xlim')
     yl2 = get(gca,'ylim')
-    xlim([xl2(1)-(2/msf) xl2(1)])
-    ylim([0 (2/msf)])
+    xlim([xl2(1)-(2/msfc) xl2(1)])
+    ylim([0 (2/msfc)])
     
     elseif strcmp(source.String(val),'move 1 down')
     
     xl2 = get(gca,'xlim')
     yl2 = get(gca,'ylim')
-    ylim([yl2(2) yl2(2)+(2/msf)])
-    xlim([0 (2/msf)])
+    ylim([yl2(2) yl2(2)+(2/msfc)])
+    xlim([0 (2/msfc)])
     
 elseif strcmp(source.String(val),'move 1 up')
     
     xl2 = get(gca,'xlim')
     yl2 = get(gca,'ylim')
-    ylim([yl2(1)-(2/msf) yl2(1)])
-    xlim([0 (2/msf)])
+    ylim([yl2(1)-(2/msfc) yl2(1)])
+    xlim([0 (2/msfc)])
     
 end
 
