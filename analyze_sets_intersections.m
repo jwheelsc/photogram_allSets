@@ -1,10 +1,10 @@
-clear all
+% clear all
 close all
-
-[folder, subFolder, imgNum, setIn] = whatFolder()
-folderStr = [folder subFolder setIn]
-
-load(folderStr)
+% 
+% [folder, subFolder, imgNum, setOut, imSave, msfc, ws, ol] = whatFolder()
+% folderStr = [folder subFolder setIn]
+% 
+% load(folderStr)
 
 %% find some bounding boxesthe bounding box of the entire set
 for i = 1:length(allSets)
@@ -20,8 +20,8 @@ minx = min(mnx)
 maxx = max(mxx)
 
 %% plot all the lines
-close all
-f1 = figure('units','normalized','outerposition',[0 0 1 1])
+% hold on
+% f1 = figure('units','normalized','outerposition',[0 0 1 1])
 
 for i = 1:length(allSets)
 % for i =282
@@ -32,16 +32,14 @@ end
 
 xlim([minx maxx])
 ylim([miny maxy])
-
-length_x = (maxx-minx)/(141)
-length_y = (maxy-miny)/(141)
-area_xy = (length_x*length_y)
-keyboard
+% length_x = (maxx-minx)/(141)
+% length_y = (maxy-miny)/(141)
+% area_xy = (length_x*length_y)
 
 
 
 %% densify the sets
-densifyLines = 1
+densifyLines = 0
 if densifyLines == 1
     for i = 1:length(allSets)
         sz = size(allSets{i})
@@ -53,22 +51,20 @@ if densifyLines == 1
         dense_jsets{i} = densify_lines(allSets{i});
 
     end
+    allSets = dense_jsets
+
+    f2 = figure('units','normalized','outerposition',[0 0 1 1])
+
+    for i = 1:length(allSets)
+    % for i =282
+        hold on
+        p = dense_jsets{i};
+        ph(i)=plot(p(:,1)',p(:,2)','k','linewidth',1);
+    end
+
+    xlim([minx maxx])
+    ylim([miny maxy])
 end
-allSets = dense_jsets
-
-%% plot all the lines
-f2 = figure('units','normalized','outerposition',[0 0 1 1])
-
-for i = 1:length(allSets)
-% for i =282
-    hold on
-    p = dense_jsets{i};
-    ph(i)=plot(p(:,1)',p(:,2)','k','linewidth',1);
-end
-
-xlim([minx maxx])
-ylim([miny maxy])
-
 %% how much does a set intersect itself?
 
 intPts = []
@@ -109,7 +105,9 @@ load([folder subFolder 'setInt_3.mat'])
 hold on
 plot(intPts(:,1),intPts(:,2),'o')
 
-
+f1 = gcf
+savePDFfunction(f1,[folder subFolder 'intersect' imSave])
+save([folder subFolder 'results.mat'],'totalints','-append')
 
 
 

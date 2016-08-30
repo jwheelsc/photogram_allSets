@@ -4,7 +4,9 @@ function redo_line_function(source, callbackdata)
 folderStr = [folder subFolder setIn]
 load(folderStr)
 
-ind = source.Value  
+prompt = 'Which line to redo?'
+ind = inputdlg(prompt)
+ind = str2num(ind{1})
 
 h = imfreehand
 lin = h.getPosition

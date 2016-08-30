@@ -1,27 +1,11 @@
-clear all
+% clear all
 close all
+% 
+% [folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder()
+% folderStr = [folder subFolder setIn]
+% 
+% load(folderStr)
 
-[folder, subFolder, imgNum, setIn] = whatFolder()
-folderStr = [folder subFolder setIn]
-
-load(folderStr)
-
-%% scale
-findSF = 0
-if findSF == 1
-    load D:\Field_data\2013\Summer\Images\JWC\GL1\Photogrammetry\July17\GL1PG1ST1\IMG_9030_analysis\scales_3d.mat
-    %%% these scales lengths were generated from plot_ptCloud, and notes are
-    %%% therin
-
-    for i = 1:length(s4)
-        sb = s4{i} %%% here s4 are the scales drawn on the 2d image
-        l_sb(i) = sqrt(sum((sb(2,:)-sb(1,:)).^2,2))
-    end
-
-    scale_factor = scales(:,2)./l_sb'  %% scales are the line length on the 3d images
-    msf = mean(scale_factor)
-end
-msf = 1/108
 %%
 % thetaA = [5:5:175];
 thetaA = [5:10:175];
@@ -60,7 +44,7 @@ for ang = 1:length(thetaA)
     end
 
     % and here I have to scale it
-    t_dist_bwp1 = t_dist_bwp*msf;
+    t_dist_bwp1 = t_dist_bwp*msfc;
     %%% compute a few stats
     spc_mean = mean(t_dist_bwp1);
     spc_std = std(t_dist_bwp1);
@@ -69,7 +53,7 @@ for ang = 1:length(thetaA)
     fq(ang) = 1/spc_mean;
     %%% alternatively, we can compute a frequency based on the mean of the
     %%% number of points for a given line length (scaled)
-    m_fq(ang) = mean(np./(line_length*msf));
+    m_fq(ang) = mean(np./(line_length*msfc));
 
 
 end
@@ -79,15 +63,15 @@ mean_fq = mean(m_fq)
 fs2 = 12
 f1 = figure(1)
     h1 = plot(thetaA,m_fq,'r-o')
-        my = max(m_fq)
-        el = find(m_fq==my)
-        mx = thetaA(el)
-        text(mx,my,num2str(my),'fontsize',fs2)
+        mxy = max(m_fq)
+        el = find(m_fq==mxy)
+        mxx = thetaA(el)
+        text(mxx,mxy,num2str(mxy),'fontsize',fs2)
         
-        my = min(m_fq)
-        el = find(m_fq==my)
-        mx = thetaA(el)
-        text(mx,my,num2str(my),'fontsize',fs2)
+        mny = min(m_fq)
+        el = find(m_fq==mny)
+        mnx = thetaA(el)
+        text(mnx,mny,num2str(mny),'fontsize',fs2)
     hold on
     h1a = plot(thetaA,fq,'r--o')
 %         my = max(fq)
@@ -103,5 +87,7 @@ f1 = figure(1)
     legend([h1 h1a], {'mean spacing^{-1}','total points per line'},...
         'location','northwest','fontsize',12)
     
-%     savePDFfunction(f1,[folder 'figuresfrequency_angle'])
+savePDFfunction(f1,[folder subFolder 'scanline_angle' imSave])
+save([folder subFolder 'results.mat'],'mxx','mxy','mnx','mny','mean_fq','-append')
+
     

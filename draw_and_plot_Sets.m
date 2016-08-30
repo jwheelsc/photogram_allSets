@@ -4,19 +4,25 @@
 
 clear all
 close all
-[folder, subFolder, imgNum, setIn] = whatFolder()
+[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(17)
 folderStr = [folder subFolder setIn]
 
+close all
 f1 = figure('units','normalized','outerposition',[0 0 1 1])
+% A = imread([folder imgNum]);
+% B = imresize(A,1/15);
 imshow([folder imgNum])
-msfc = 1/239.17
+xlms = get(gca,'xlim')
+ylms = get(gca,'ylim')
+% xlms = [3259 4867]
+% ylms = [1239 2310]
 % return
-% lxl = 826
-% uxl = 3884
-% lyl = 476
-% uyl = 2370
-% xlim([lxl uxl])
-% ylim([lyl uyl])
+lxl = xlms(1)
+uxl = xlms(2)
+lyl = ylms(1)
+uyl = ylms(2)
+xlim([lxl uxl])
+ylim([lyl uyl])
 % hold on
 % plot([lxl lxl],[lyl uyl],'r-','linewidth',2)
 % hold on
@@ -29,42 +35,78 @@ msfc = 1/239.17
 % plot([uxl-141-200 uxl-200],[uyl-100 uyl-100],'y','linewidth',3)
 load(folderStr)
 
+
 %% if you want to inititate a set, then do the following...BUT BE CAREFUL NOT TO DELETE
 %%% these sets should be saved in source control
 RUNTHIS = 'No'
 
 if strcmp(RUNTHIS,'YES')
     allSets = []
-save(folderStr,'allSets','-append')
+save(folderStr,'allSets')
 end
 
 %%
+
+% for i = round(length(allSets)*0.6):length(allSets)
 for i = 1:length(allSets)
     hold on
     p = allSets{i};
     ph(i)=plot(p(:,1)',p(:,2)','b','linewidth',1);
     ely = find(p(:,2)==max(p(:,2)));
     ely = ely(end);
-    text(p(ely,1),p(ely,2),num2str(i),'fontsize',6,'color', [1 1 1]);
+%     text(p(ely,1),p(ely,2),num2str(i),'fontsize',7,'color', [1 1 1]);
 end
+
+twoMbar = 2/msfc
+hold on 
+plot([uxl-(2.2/msfc) uxl-(0.2/msfc)],[uyl-(1/msfc) uyl-(1/msfc)],'y','linewidth',4)
+text([uxl-(3/msfc)],[uyl-(1.2/msfc)],'2 meters','fontsize',10,'color','y')
+
+f1 = gcf
+savePDFfunction(f1,[folder subFolder 'trace' imSave])
+return
+
+%% find the traces that are longer than the window size, but you only want
+%%% to run this if your not plotting all traces
+
+plotFewerTraces = 0
+
+if plotFewerTraces == 1
+    traceL = getLineLength(allSets)
+    rtl = traceL*msfc
+%     el = find(rtl>sqrt(2*ws^2))
+    el = find(rtl>ws)
+    
+    for i = 1:length(el)
+        hold on
+        p = allSets{el(i)};
+        ph(i)=plot(p(:,1)',p(:,2)','r','linewidth',1);
+        ely = find(p(:,2)==max(p(:,2)));
+        ely = ely(end);
+%         text(p(ely,1),p(ely,2),num2str(el(i)),'fontsize',7,'color', [1 1 1]);
+    end
+
+end
+%%
+
 
 xlm = get(gca,'xlim')
 ylm = get(gca,'ylim')
 
-popup = uicontrol('Style', 'popup',...
-   'String', {'create line','draw set'},...
+popup = uicontrol('Style', 'pushbutton',...
+   'String', 'create line',...
    'Position', [1100 500 80 50],...
    'Callback', @draw_line_function); 
 
-text(1.12,0.78,'redo line','units','normalized')
-popup = uicontrol('Style', 'popup',...
-   'String', num2cell(1:length(allSets)),...
+% text(1.12,0.78,'redo line','units','normalized')
+popup = uicontrol('Style', 'pushbutton',...
+   'String', 'redo line',...
    'Position', [1100 400 80 50],...
    'Callback', @redo_line_function); 
 
-text(1.12,0.58,'append line','units','normalized')
-popup = uicontrol('Style', 'popup',...
-   'String', num2cell(1:length(allSets)),...
+% text(1.12,0.58,'append line','units','normalized')
+popup = uicontrol('Style', 'pushbutton',...
+   'String', 'append line',...
    'Position', [1100 300 80 50],...
    'Callback', @append_line_function); 
 
@@ -95,8 +137,10 @@ btn = uicontrol('Style', 'pushbutton',...
         'String', 'return window',...
         'Position', [1100 90-37.5 80 30],...
         'Callback', @lastWindow_function);
+
+
         
-return
+% return
 
 
 %% if you want to find a given line
@@ -116,12 +160,13 @@ for i = 1:length(allSets)
 end
 
 %% if you need to get rid of a line, try this
-[folder, subFolder, imgNum, setIn] = whatFolder()
+[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(17)
 folderStr = [folder subFolder setIn]
+
 load(folderStr)
 close all
 
-pt = 282
+pt = 3327
 
 % for i = 280:300
 %     hold on
@@ -148,14 +193,14 @@ end
 RESAVE = 0
 if RESAVE == 1
     allSets = newSet
-    save(folderStr,'allSets','-append')
+    save(folderStr,'allSets')
 end
 
 %% delete points outside the bounding box
 % clear all
 xlim=[lxl uxl]
 ylim=[lyl uyl]
-[folder, subFolder, imgNum, setIn] = whatFolder()
+[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(17)
 folderStr = [folder subFolder setIn]
 load(folderStr)
 close all
@@ -201,10 +246,29 @@ end
     
 RESAVE = 0
 if RESAVE == 1
-    s3 = SN
-    save(folderStr,'allSets','-append')
-end  
+    allSets = SN
+    save(folderStr,'allSets')
+end
+
+
+%% if you deleted lines outside an inner bounding box, then you'll need to get rid of them as
+
+count = 1;
+for i = 1:length(allSets)
     
+    if size(allSets{i},1) ~= 0; 
+        jnt{count} = allSets{i}; 
+        count = count+1;
+    end
+end
+
+RESAVE = 0
+if RESAVE == 1
+    allSets = jnt
+    save(folderStr,'allSets')
+end
+
+
 %% ensure all sets go from left to right
 crack_arr = {}
 for i = 1:length(allSets)

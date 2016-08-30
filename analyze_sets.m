@@ -1,28 +1,29 @@
-clear all
+% clear all
 close all
-
-[folder, subFolder, imgNum, setIn] = whatFolder()
-folderStr = [folder subFolder setIn]
-
-load(folderStr)
+% 
+% [folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder()
+% folderStr = [folder subFolder setIn]
+% 
+% load(folderStr)
 setNum = 'allSets'
 SN = allSets
 jsets = {}
 
 
 %% densify the sets
+dts = 0
+if dts == 1
+    for i = 1:length(allSets)
+        sz = size(allSets{i})
+        if sz(1)<2
+            i
+            keyboard
+        end
 
-for i = 1:length(allSets)
-    sz = size(allSets{i})
-    if sz(1)<2
-        i
-        keyboard
+        dense_jsets{i} = densify_lines(allSets{i});
+
     end
-    
-    dense_jsets{i} = densify_lines(allSets{i});
-    
 end
-
 %% find some bounding boxesthe bounding box of the entire set
 for i = 1:length(allSets)
     lin = allSets{i};
@@ -43,17 +44,19 @@ f1 = figure('units','normalized','outerposition',[0 0 1 1])
 for i = 1:length(allSets)
 % for i =282
     hold on
-    p = dense_jsets{i};
+    p = allSets{i};
     ph(i)=plot(p(:,1)',p(:,2)','k','linewidth',1);
 end
 
 xlim([minx maxx])
 ylim([miny maxy])
 
-length_x = (maxx-minx)/(110.8)
-length_y = (maxy-miny)/(110.8)
+scales = 1/(msfc)
+length_x = (maxx-minx)/(scales)
+length_y = (maxy-miny)/(scales)
 area_xy = (length_x*length_y)
 
+save([folder subFolder 'results.mat'],'length_x','length_y','area_xy')
 
 %% if you want to find a given line
 fsl = 0
@@ -125,9 +128,9 @@ for t = 1:length(thetaA)
             count_i = 1;
             int_point = [];
 
-            for i = [1:length(dense_jsets)]
+            for i = [1:length(allSets)]
 
-                frac = dense_jsets{i};
+                frac = allSets{i};
 
                 x_sl = frac(:,1);
                 y_sl = (m_sl*x_sl)+b_sl;
@@ -172,9 +175,9 @@ for t = 1:length(thetaA)
             plot([p1(1) p2(1)],[p1(2) p2(2)],'m-')
             count_i = 1;
             int_point = [];
-            for i = [1:length(dense_jsets)]
+            for i = [1:length(allSets)]
 
-                frac = dense_jsets{i};
+                frac = allSets{i};
 
                 x_sl = frac(:,1);
                 y_sl = (m_sl*x_sl)+b_sl;
@@ -202,7 +205,7 @@ for t = 1:length(thetaA)
 
 end
 
-
+savePDFfunction(f1,[folder subFolder 'scanline_intersect' imSave])
 
 
 

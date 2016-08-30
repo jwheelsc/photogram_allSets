@@ -4,7 +4,11 @@ function append_line_function(source, callbackdata)
 folderStr = [folder subFolder setIn]
 load(folderStr)
 
-ind = source.Value   
+prompt = 'which line to append?'
+ind = inputdlg(prompt)
+ind = str2num(ind{1})
+
+% ind = source.Value   
 h = imfreehand;
 h0 = allSets{ind};
 lin = h.getPosition;
