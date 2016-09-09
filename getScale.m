@@ -4,7 +4,7 @@ close all
 
 % load('D:\Field_data\2013\Summer\Images\JWC\Aug07\GL18\Photogrammetry\GL18PG1ST2\IMG_250_analysis\scales2d.mat')
 
-[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(15)
+[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(19)
 folderStr = [folder subFolder setIn]
 
 f1 = figure('units','normalized','outerposition',[0 0 1 1])
@@ -42,28 +42,29 @@ spx = std(pxpm)
 return
 %%
 
-load('D:\Field_data\2013\Summer\Images\JWC\Aug07\GL19\Photogrammetry\GL19PG1ST1\IMG_519_analysis\scales2d.mat','le','dist')
+load('D:\Field_data\2013\Summer\Images\JWC\Aug01\GL8\Photogrammetry\GL8PG01ST1_6\IMG_1514_analysis\scales3d.mat')
 
 
 
-l1 = ginput(2)
-l2 = ginput(2)
-l3 = ginput(2)
-l4 = ginput(2)
+l1 = ginput(1)
+l2 = ginput(1)
+l3 = ginput(1)
+l4 = ginput(1)
+l5 = ginput(1)
 
-le = [l1;l2;l3;l4]
+le = [l1;l2;l3;l4;l5]
 
 count = 1
 d2 = []
 for i = 1:(length(le(:,1))-1)
     for j = i+1:length(le)
         diff = le(i,:)-le(j,:);
-        d2(count) =  sum(sqrt((diff(:,1).^2)+(diff(:,2).^2)),2)
+        d2(count) =  sqrt((diff(:,1).^2)+(diff(:,2).^2))
         count = count+1
     end
 end
 
-dist2 = d2./dist
+dist2 = d2./dist3d
 % save('D:\Field_data\2013\Summer\Images\JWC\Aug07\GL19\Photogrammetry\GL19PG1ST1\IMG_519_analysis\scales2d.mat','le','dist')
 
 return
@@ -83,6 +84,34 @@ d = d(1:2:end)
 realLength = 0.25
 
 pxpm = mean(d/realLength)
+
+
+%% if you have the scale balls directly
+
+l1 = ginput(2)
+diff = l1(2,:)-l1(1,:);
+d1 =  sum(sqrt((diff(:,1).^2)+(diff(:,2).^2)),2)
+
+l1 = ginput(2)
+diff = l1(2,:)-l1(1,:);
+d2 =  sum(sqrt((diff(:,1).^2)+(diff(:,2).^2)),2)
+
+keyboard
+
+l1 = ginput(2)
+diff = l1(2,:)-l1(1,:);
+d3 =  sum(sqrt((diff(:,1).^2)+(diff(:,2).^2)),2)
+
+l1 = ginput(2)
+diff = l1(2,:)-l1(1,:);
+d4 =  sum(sqrt((diff(:,1).^2)+(diff(:,2).^2)),2)
+
+keyboard
+
+l = mean([d1,d2,d3,d4])
+lsd = std([d1,d2,d3,d4])
+
+pxpm = l/0.25
 
 %% just to get the distance in pixels
 
