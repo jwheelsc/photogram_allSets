@@ -7,9 +7,9 @@ close all
 % then plot it. 
 
 % load the pointcloud cloud from the vSFM model
-ptCloud = pcread('D:\Code\photogrammetry\imageSequences\Glaciers\GL1\PG6\model3.nvm.cmvs\00\models\option-0000.ply');
+ptCloud = pcread('D:\Code\photogrammetry\imageSequences\Glaciers\GL7\test3.nvm.cmvs\00\models\option-0000.ply');
 % read in just the xyz coordinates and color from the same point clod
-f1 = fopen('D:\Code\photogrammetry\imageSequences\Glaciers\GL1\PG6\model3.nvm.cmvs\00\models\option-0000_4ml.ply');
+f1 = fopen('D:\Code\photogrammetry\imageSequences\Glaciers\GL7\test3.nvm.cmvs\00\models\option-0000_4ml.ply');
 a1 = textscan(f1,'%f %f %f %f %f %f %d %d %d');
 xyz = [a1{1} a1{2} a1{3}];
 color = [a1{7} a1{8} a1{9}];
@@ -20,61 +20,10 @@ ptCloud.Color = uint8(color);
 pcshow(ptCloud)
 
 %% make some bars here to compute a scale factor
-
-figure 
-imshow('D:\Field_data\2013\Summer\Images\JWC\GL1\Photogrammetry\July19\GL1PG6ST1_9\IMG_0119.JPG')
-
-%% get the length length of 3 lines on 2D image
-xl = ginput(2)
-dif=xl(2,:)-xl(1,:)
-lx = sqrt(sum(dif.*dif,2))
-
-line1 = 1079.5
-line2 = 1312.4
-line3 = 2035.3
-line4 = 301.1
-% line5 = 381.8481
-% line6 = 393.9746
-% line7 = 828.3091
-% line8 = 65.3952
-%%% get the scales from the left and right balls
-% xlim([736,777])
-% ylim([1876,1901])
-% xl = ginput(2)
-% dif=xl(2,:)-xl(1,:)
-% lxl = sqrt(sum(dif.*dif,2))
-% ball = 0.25
 % 
-% xlim([3171,3210])
-% ylim([2131,2160])
-% xr = ginput(2)
-% dif=xr(2,:)-xr(1,:)
-% lxr = sqrt(sum(dif.*dif,2))
-% ball = 0.25
+% figure 
+% imshow('D:\Field_data\2013\Summer\Images\JWC\Aug01\GL8\Photogrammetry\GL8PG01ST1_6\IMG_1514.JPG')
 
-% px = 28
-% sc_ball = ball/px
-% 
-lines_2d = [line1;line2;line3;line4]
-% ;line4;line5;line6;...
-%     line7;line8]*sc_ball
-
-
-% s3 scale bars
-
-l1p1 = [4.021,3.064,3.467]
-l1p2 = [3.838,3.555,2.444]
-l2p1 = [4.351,3.437,2.472]
-l2p2 = [2.894,3.392,3.147]
-l3p1 = [3.979,2.980,3.632]
-l3p2 = [4.204,3.570,1.559]
-l4p1 = [3.565,3.311,2.994]
-l4p2 = [3.770,3.465,2.733]
-% 
-bars = [l1p1;l1p2;l2p1;l2p2;l3p1;l3p2;l4p1;l4p2]
-% 
-barL3d = bars(2:2:length(bars(:,1)),:)-bars(1:2:length(bars(:,1))-1,:)
-lin3d = sqrt(sum(barL3d .*barL3d ,2))
 
 %% here we are doing short range, and we know the absolute distance between
 %%% camera stations to be X meters, and there is 1 camera per station. We
@@ -82,15 +31,98 @@ lin3d = sqrt(sum(barL3d .*barL3d ,2))
 %%% scale on the wall.
 
 % read in the camera coordinates from the vSFM model
-f2 = fopen('D:\Code\photogrammetry\imageSequences\Glaciers\GL1\PG6\model3.nvm.cmvs\00\centers-0000_4ml.ply');
+f2 = fopen('D:\Code\photogrammetry\imageSequences\Glaciers\GL7\test3.nvm.cmvs\00\centers-0000_4ml.ply');
 a = textscan(f2,'%f %f %f');
 p = [a{1} a{2} a{3}];
 
 [ps,pi] = sort(p(:,1))
 ps = p(pi,:)
 
+
+% clust = kmeans(p(:,1),3)
+% st1 = p(clust==1,:)
+% st2 = p(clust==2,:)
+% st3 = p(clust==3,:)
+
+st1 = mean(ps([2 3],:))
+st2 = mean(ps([4 6],:))
+
+% stations = [st1;st2;st3]
+
+% sts = [2 3 4 6]
+for i = [2 3 4 6]
+    hold on
+    plot3(ps(i,1),ps(i,2),ps(i,3),'ro','markerfacecolor','b')
+    text(ps(i,1),ps(i,2),ps(i,3),num2str(i))
+end
+
 hold on
-plot3(ps(:,1),ps(:,2),ps(:,3),'ro','markerfacecolor','r')
+plot3(st1(1),st1(2),st1(3),'ro','markerfacecolor','g')
+text(st1(1),st1(2),st1(3),'st1')
+hold on
+plot3(st2(1),st2(2),st2(3),'ro','markerfacecolor','g')
+text(st2(1),st2(2),st2(3),'st2')
+
+% stDiff = stations(2:end,:)-stations(1:end-1,:)
+% stDist = sqrt(stDiff(:,1).^2+stDiff(:,2).^2+stDiff(:,3).^2)
+
+% mstd = mean(stDist)
+% mtpxpm = mstd/6
+
+cC = [607991 6750166 2383;608046 6750150 2369]
+
+mC = [st1;st2]
+
+cCd = sqrt(sum(diff(cC).^2))
+mCd = sqrt(sum(diff(mC).^2))
+
+mlpxpm = mCd/cCd
+
+%% get the length length of 3 lines on 2D image
+
+
+% s3 scale bars
+
+p1 = [-0.8252 -0.7437 1.719]
+p2 = [-0.8629 -0.8215 1.752]
+p3 = [-0.879 -0.7537 1.728]
+p4 = [-0.7811 -0.7598 1.71]
+p5 = [-0.7465 -0.7107 1.715]
+scPts = [p1;p2;p3;p4;p5]
+
+hold on
+plot3(p1(1),p1(2),p1(3),'ro','markerfacecolor','y')
+text(p1(1),p1(2),p1(3),num2str(1), 'fontsize',14,'color','r')
+hold on
+plot3(p2(1),p2(2),p2(3),'ro','markerfacecolor','y')
+text(p2(1),p2(2),p2(3),num2str(2), 'fontsize',14,'color','r')
+hold on
+plot3(p3(1),p3(2),p3(3),'ro','markerfacecolor','y')
+text(p3(1),p3(2),p3(3),num2str(3), 'fontsize',14,'color','r')
+hold on
+plot3(p4(1),p4(2),p4(3),'ro','markerfacecolor','y')
+text(p4(1),p4(2),p4(3),num2str(4), 'fontsize',14,'color','r')
+hold on
+plot3(p5(1),p5(2),p5(3),'ro','markerfacecolor','y')
+text(p5(1),p5(2),p5(3),num2str(5), 'fontsize',14,'color','r')
+
+count = 1
+dist3d = []
+for i = 1:length(scPts)-1
+    for j = i+1:length(scPts)
+        dist3d(count) = sqrt(sum((scPts(i,:)-scPts(j,:)).^2))
+        count = count+1 
+    end
+end
+dist3d = dist3d/mlpxpm
+save('D:\Field_data\2013\Summer\Images\JWC\Aug01\GL7\Photogrammetry\GL7PG1ST2\IMG_1348_analysis\scales3d.mat','dist3d')
+f1 = gcf
+savePDFfunction(f1,'D:\Field_data\2013\Summer\Images\JWC\Aug01\GL7\Photogrammetry\GL7PG1ST2\IMG_1348_analysis\model3d')
+
+return
+
+hold on
+plot3(ps(:,1),ps(:,2),ps(:,3),'bo','markerfacecolor','b')
 hold on
 % txt = [1:5]
 % for i = 1:5

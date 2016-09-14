@@ -1,6 +1,7 @@
 function append_line_function(source, callbackdata)
 
-[folder, subFolder, imgNum, setIn] = whatFolder()
+iNum = source.UserData.imNum
+[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(iNum)
 folderStr = [folder subFolder setIn]
 load(folderStr)
 
@@ -9,20 +10,41 @@ ind = inputdlg(prompt)
 ind = str2num(ind{1})
 
 % ind = source.Value   
-h = imfreehand;
+h1 = imfreehand;
 h0 = allSets{ind};
-lin = h.getPosition;
+lin = h1.getPosition;
 if lin(1,1)>lin(end,1)
     lin = lin(end:-1:1,:);
 end
 
-d1 = sqrt(sum((h0(end,1)-lin(1,1)).^2+(h0(end,2)-lin(1,2)).^2));
-d2 = sqrt(sum((h0(1,1)-lin(end,1)).^2+(h0(1,2)-lin(end,2)).^2));
+l1 = lin(1,:)
+l2 = lin(end,:)
+h1 = h0(1,:)
+h2 = h0(end,:)
 
-if d1<d2
-    allSets{ind} = [h0;lin];
-else
-    allSets{ind} = [lin;h0];
+d1 = sqrt(sum((l1-h1).^2))
+d2 = sqrt(sum((l1-h2).^2))
+d3 = sqrt(sum((l2-h1).^2))
+d4 = sqrt(sum((l2-h2).^2))
+
+d = [d1,d2,d3,d4]
+minEl = find(d==(min(d)))
+if minEl==1
+    tl = [lin(end:-1:1,:);h0]
+    if tl(1,1)>tl(end,1)
+        tl = tl(end:-1:1,:)
+    end
+    allSets{ind} = tl;
+elseif minEl==2
+    allSets{ind} = [h0;lin]
+elseif minEl==3
+    allSets{ind} = [lin;h0]
+elseif minEl==4
+    tl = [lin;h0(end:-1:1,:)]
+    if tl(1,1)>tl(end,1)
+        tl = tl(end:-1:1,:)
+    end
+    allSets{ind} = tl;
 end
 
 save(folderStr,'allSets','-append')

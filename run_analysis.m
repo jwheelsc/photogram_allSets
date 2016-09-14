@@ -2,14 +2,14 @@
 clear all
 close all
 
-for i = 14
+for i = 19
     
     [folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(i)
     folderStr = [folder subFolder setIn]
     load(folderStr)
 
     
-    run draw_and_plot_Sets.m
+    run draw_and_plot_Sets.m %% this one you might to comment out some things
 
     run analyze_sets.m
 
@@ -25,8 +25,8 @@ return
 
 %%
     clear all
-
-    [folder, subFolder, imgNum, setIn, imSave] = whatFolder(14)
+for i = 19
+    [folder, subFolder, imgNum, setIn, imSave] = whatFolder(i)
     load([folder subFolder 'results.mat'])
 
     ['the max frequency is ' num2str(mxy)]
@@ -39,6 +39,7 @@ return
     ['the length in x is ' num2str(length_x)]
     ['the length in y is ' num2str(length_y)]
     ['the area  ' num2str(area_xy)]
-    
+end
+
 
 

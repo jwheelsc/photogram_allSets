@@ -1,7 +1,9 @@
 function moveRight_button(source, callbackdata)
    
-msfc = source.UserData.scale
-[msfc,ws,ol] = msfcFunc()
+iNum = source.UserData.imNum
+[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(iNum)
+folderStr = [folder subFolder setIn]
+load(folderStr)
 
 xl2 = get(gca,'xlim')
 yl2 = get(gca,'ylim')

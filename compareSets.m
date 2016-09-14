@@ -1,4 +1,4 @@
-[dat, written] = xlsread('D:\Field_data\2013\Summer\Geotech\outcrop_disctontinuity.xlsx',1,'A1:U43');
+[dat, written] = xlsread('D:\Field_data\2013\Summer\Geotech\outcrop_disctontinuity.xlsx',1,'A1:V43');
 vars = written(:,1);
 msLogi = dat(strcmp(vars,'rock type'),:)== 1;
 mxLogi = dat(strcmp(vars,'rock type'),:)== 2;
@@ -32,17 +32,17 @@ ftNAN = (isnan(maxFreq)==0)
 GLnum = glaciers(ftNAN)
 labs = labels(ftNAN)
 
-x = numJnts(ftNAN)
-y = AR(ftNAN)
+x = GLnum(ftNAN)
+y = meanFreq(ftNAN)
 plot(x,y,'o','markerfacecolor',[0 0 1],'markersize',10)
 
 
 
 xls = get(gca,'xlim')
 dxls = (xls(2)-xls(1))/80
-for i = 1:length(GLnum)
-    text(x(i)+dxls,y(i),labs{i}, 'fontsize',16)
-end
+% for i = 1:length(GLnum)
+%     text(x(i)+dxls,y(i),labs{i}, 'fontsize',16)
+% end
 
 % for i = 1:length(freqX)
 %     hold on 
@@ -52,10 +52,10 @@ end
 grid on
 xlabel('Number of joints')
 ylabel('Area (m^2)')
-% xlim([0 22])
-% set(gca,'xtick',[0:22])
+xlim([0 22])
+set(gca,'xtick',[0:22])
 set(gca,'fontsize',18)
-savePDFfunction(f1,'D:\Code\photog_allSets\figures\njVsArea')
+% savePDFfunction(f1,'D:\Code\photog_allSets\figures\njVsArea')
 
 %% six subplots
 
@@ -166,7 +166,7 @@ xlabel('int/A (m^{-2})')
 ylabel('P_{20} (m^{-2})')
 set(gca,'fontsize',fs)
 
-savePDFfunction(f1,'D:\Code\photog_allSets\figures\sixPlot')
+% savePDFfunction(f1,'D:\Code\photog_allSets\figures\sixPlot')
 
 %% six subplots
 
@@ -275,7 +275,7 @@ xlabel('log(int/A (m^{-2}))')
 ylabel('log(P_{20} (m^{-2}))')
 set(gca,'fontsize',fs)
 
-savePDFfunction(f1,'D:\Code\photog_allSets\figures\log_sixPlot')
+% savePDFfunction(f1,'D:\Code\photog_allSets\figures\log_sixPlot')
 
 
 
@@ -320,7 +320,7 @@ ylabel('frequency (m^{-1})')
 % xlim([0 22])
 % set(gca,'xtick',[0:22])
 set(gca,'fontsize',18)
-savePDFfunction(f1,'D:\Code\photog_allSets\figures\p21Vsfreq')
+% savePDFfunction(f1,'D:\Code\photog_allSets\figures\p21Vsfreq')
 
 
 

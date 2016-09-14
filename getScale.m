@@ -2,9 +2,7 @@
 clear all
 close all
 
-% load('D:\Field_data\2013\Summer\Images\JWC\Aug07\GL18\Photogrammetry\GL18PG1ST2\IMG_250_analysis\scales2d.mat')
-
-[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(19)
+[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(20)
 folderStr = [folder subFolder setIn]
 
 f1 = figure('units','normalized','outerposition',[0 0 1 1])
@@ -15,16 +13,16 @@ imshow([folder imgNum])
 %%
 
 l1 = ginput(1)
-keyboard
+% keyboard
 l2 = ginput(1)
-keyboard
+% keyboard
 l3 = ginput(1)
-keyboard
+% keyboard
 l4 = ginput(1)
-keyboard
+% keyboard
 le = [l1;l2;l3;l4]
 
-le = lin
+% le = lin
 count = 1
 d2 = []
 for i = 1:(length(le(:,1))-1)
@@ -35,14 +33,22 @@ for i = 1:(length(le(:,1))-1)
     end
 end
 
-pxpm = d./rDs
+load('D:\Field_data\2013\Summer\Images\JWC\Aug01\GL7\Photogrammetry\GL7PG1ST2\IMG_1343_analysis\scales2d1298.mat')
+pxpm = d2./pxpm2
 mpx = mean(pxpm)
 spx = std(pxpm)
+
+
+for i = 1:4
+    hold on 
+    plot(le(i,1),le(i,2),'ro','markerfacecolor','y')
+    text(le(i,1),le(i,2),num2str(i))
+end
 
 return
 %%
 
-load('D:\Field_data\2013\Summer\Images\JWC\Aug01\GL8\Photogrammetry\GL8PG01ST1_6\IMG_1514_analysis\scales3d.mat')
+load('D:\Field_data\2013\Summer\Images\JWC\Aug01\GL7\Photogrammetry\GL7PG1ST2\IMG_1348_analysis\scales3d.mat')
 
 
 
@@ -120,4 +126,4 @@ l1 = ginput(2)
 diff = l1(2,:)-l1(1,:);
 d =  sum(sqrt((diff(:,1).^2)+(diff(:,2).^2)),2)
 
-l = d/0.28
+l = d/252.18

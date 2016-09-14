@@ -7,9 +7,9 @@ close all
 % then plot it. 
 
 % load the pointcloud cloud from the vSFM model
-ptCloud = pcread('D:\Code\photogrammetry\imageSequences\Glaciers\GL1\PG3\model3.nvm.cmvs\00\models\option-0000.ply');
+ptCloud = pcread('D:\Code\photogrammetry\imageSequences\Glaciers\GL8\test1.nvm.cmvs\00\models\option-0000.ply');
 % read in just the xyz coordinates and color from the same point clod
-f1 = fopen('D:\Code\photogrammetry\imageSequences\Glaciers\GL1\PG3\model3.nvm.cmvs\00\models\option-0000_4ml.ply');
+f1 = fopen('D:\Code\photogrammetry\imageSequences\Glaciers\GL8\test1.nvm.cmvs\00\models\option-0000.ply');
 a1 = textscan(f1,'%f %f %f %f %f %f %d %d %d');
 xyz = [a1{1} a1{2} a1{3}];
 color = [a1{7} a1{8} a1{9}];
@@ -50,7 +50,7 @@ fig1 = pcshow(ptCloud)
 %%
 
 % read in the camera coordinates from the vSFM model
-f2 = fopen('D:\Code\photogrammetry\imageSequences\Glaciers\GL1\PG3\model3.nvm.cmvs\00\centers-0000_4ml.ply');
+f2 = fopen('D:\Code\photogrammetry\imageSequences\Glaciers\GL8\test1.nvm.cmvs\00\centers-0000_4ml.ply');
 a = textscan(f2,'%f %f %f');
 p = [a{1} a{2} a{3}];
 

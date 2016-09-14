@@ -1,11 +1,11 @@
-% clear all
-close all
-% 
-% [folder, subFolder, imgNum, setOut, imSave, msfc, ws, ol] = whatFolder()
+% clear variables
+% close all
+% % 
+% [folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(i)
 % folderStr = [folder subFolder setIn]
-% 
 % load(folderStr)
 
+close all
 %% find some bounding boxesthe bounding box of the entire set
 for i = 1:length(allSets)
     lin = allSets{i};
@@ -39,31 +39,31 @@ ylim([miny maxy])
 
 
 %% densify the sets
-densifyLines = 0
+densifyLines = 1
 if densifyLines == 1
     for i = 1:length(allSets)
         sz = size(allSets{i})
-        if sz(1)<2
-            i
-            keyboard
-        end
+%         if sz(1)<2
+%             i
+%             keyboard
+%         end
 
         dense_jsets{i} = densify_lines(allSets{i});
 
     end
     allSets = dense_jsets
 
-    f2 = figure('units','normalized','outerposition',[0 0 1 1])
-
-    for i = 1:length(allSets)
-    % for i =282
-        hold on
-        p = dense_jsets{i};
-        ph(i)=plot(p(:,1)',p(:,2)','k','linewidth',1);
-    end
-
-    xlim([minx maxx])
-    ylim([miny maxy])
+%     f2 = figure('units','normalized','outerposition',[0 0 1 1])
+% 
+%     for i = 1:length(allSets)
+%     % for i =282
+%         hold on
+%         p = dense_jsets{i};
+%         ph(i)=plot(p(:,1)',p(:,2)','k','linewidth',1);
+%     end
+% 
+%     xlim([minx maxx])
+%     ylim([miny maxy])
 end
 %% how much does a set intersect itself?
 
@@ -96,12 +96,12 @@ for i = 1:length(allSets)-1
     
 end
 
-save([folder subFolder 'setInt_3.mat'],'intPts')
+save([folder subFolder 'setInt.mat'],'intPts')
 totalints = length(intPts)
 
 
 %%
-load([folder subFolder 'setInt_3.mat'])
+load([folder subFolder 'setInt.mat'])
 hold on
 plot(intPts(:,1),intPts(:,2),'o')
 

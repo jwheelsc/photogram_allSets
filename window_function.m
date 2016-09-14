@@ -2,7 +2,9 @@ function window_function(source, callbackdata)
 %DRAW_LINE_FUNCTION Summary of this function goes here
 %   Detailed explanation goes here
 
-[folder, subFolder, imgNum, setIn] = whatFolder()
+
+iNum = source.UserData.imNum
+[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(iNum)
 folderStr = [folder subFolder setIn]
 load(folderStr)
 
@@ -11,9 +13,6 @@ source.String(val)
 
 xlm = source.UserData.xl
 ylm = source.UserData.yl
-msfc = source.UserData.scale
-
-[msfc,ws,ol] = msfcFunc()
 
 if strcmp(source.String(val),'full image')
 
@@ -59,7 +58,7 @@ elseif strcmp(source.String(val),'move left')
     xlim([xl2(1)-((ws-ol)/msfc) xl2(1)+(ol/msfc)])
     ylim([yl2(1) yl2(2)])
     
-    elseif strcmp(source.String(val),'move down')
+elseif strcmp(source.String(val),'move down')
     
     xl2 = get(gca,'xlim')
     yl2 = get(gca,'ylim')
@@ -73,7 +72,7 @@ elseif strcmp(source.String(val),'move up')
     ylim([yl2(1)-((ws-ol)/msfc) yl2(1)+(ol/msfc)])
     xlim([xl2(1) xl2(2)])
     
-    elseif strcmp(source.String(val),'move 1 right')
+elseif strcmp(source.String(val),'move 1 right')
     
     xl2 = get(gca,'xlim')
     yl2 = get(gca,'ylim')
@@ -87,7 +86,7 @@ elseif strcmp(source.String(val),'move 1 left')
     xlim([xl2(1)-(ws/msfc) xl2(1)])
     ylim([yl2(1) yl2(2)])
     
-    elseif strcmp(source.String(val),'move 1 down')
+elseif strcmp(source.String(val),'move 1 down')
     
     xl2 = get(gca,'xlim')
     yl2 = get(gca,'ylim')

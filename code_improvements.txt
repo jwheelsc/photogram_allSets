@@ -1,0 +1,3 @@
+-cant append line unless window is reset
+-need to redo the set intersections with densified sets
+-need to track the difference in angle 

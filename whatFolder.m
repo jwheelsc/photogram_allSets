@@ -152,8 +152,37 @@ if i == 17
     setOut = 'setsAll.mat'
     imgNum = 'IMG_0519.jpg'
     imSave = '_0519'
-    msfc = 1/108
+    msfc = 1/330.47
 end
+
+if i == 18
+    folder = 'D:\Field_data\2013\Summer\Images\JWC\Aug07\GL20_Maxwell\Photogrammetry\GL20PG1ST1_X\'
+    subFolder = 'IMG_0794_analysis\'
+    setOut = 'setsAll.mat'
+    imgNum = 'IMG_0794.jpg'
+    imSave = '_0794'
+    msfc = 1/125.9161
+end
+
+if i == 19
+    folder = 'D:\Field_data\2013\Summer\Images\JWC\Aug01\GL8\Photogrammetry\GL8PG01ST1_6\'
+    subFolder = 'IMG_1514_analysis\'
+    setOut = 'setsAll.mat'
+    imgNum = 'IMG_1514.jpg'
+    imSave = '_1514'
+    msfc = 1/252.18
+end
+
+if i == 20
+    folder = 'D:\Field_data\2013\Summer\Images\JWC\Aug01\GL7\Photogrammetry\GL7PG1ST2\'
+    subFolder = 'IMG_1343_analysis\'
+    setOut = 'setsAll.mat'
+    imgNum = 'IMG_1343.jpg'
+    imSave = '_1343'
+    msfc = 1/233.18
+end
+
+
 
 ws = 2
 ol = (1/8)*ws

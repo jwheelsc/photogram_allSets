@@ -1,6 +1,8 @@
 function draw_set_function(source, callbackdata)
 
-[folder, subFolder, imgNum, setIn] = whatFolder()
+
+iNum = source.UserData.imNum
+[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(iNum)
 folderStr = [folder subFolder 'limits.mat']
 
 xlm = get(gca,'xlim')

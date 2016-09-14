@@ -4,7 +4,8 @@
 
 clear all
 close all
-[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(17)
+iNum = 20
+[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(iNum)
 folderStr = [folder subFolder setIn]
 
 close all
@@ -12,10 +13,10 @@ f1 = figure('units','normalized','outerposition',[0 0 1 1])
 % A = imread([folder imgNum]);
 % B = imresize(A,1/15);
 imshow([folder imgNum])
-xlms = get(gca,'xlim')
-ylms = get(gca,'ylim')
-% xlms = [3259 4867]
-% ylms = [1239 2310]
+% xlms = get(gca,'xlim')
+% ylms = get(gca,'ylim')
+xlms = [1418 2855]
+ylms = [2103 3061]
 % return
 lxl = xlms(1)
 uxl = xlms(2)
@@ -23,14 +24,14 @@ lyl = ylms(1)
 uyl = ylms(2)
 xlim([lxl uxl])
 ylim([lyl uyl])
-% hold on
-% plot([lxl lxl],[lyl uyl],'r-','linewidth',2)
-% hold on
-% plot([uxl uxl],[lyl uyl],'r-','linewidth',2)
-% hold on
-% plot([lxl uxl],[lyl lyl],'r-','linewidth',2)
-% hold on
-% plot([lxl uxl],[uyl uyl],'r-','linewidth',2)
+hold on
+plot([lxl lxl],[lyl uyl],'r-','linewidth',2)
+hold on
+plot([uxl uxl],[lyl uyl],'r-','linewidth',2)
+hold on
+plot([lxl uxl],[lyl lyl],'r-','linewidth',2)
+hold on
+plot([lxl uxl],[uyl uyl],'r-','linewidth',2)
 % hold on 
 % plot([uxl-141-200 uxl-200],[uyl-100 uyl-100],'y','linewidth',3)
 load(folderStr)
@@ -47,24 +48,24 @@ end
 
 %%
 
-% for i = round(length(allSets)*0.6):length(allSets)
+% for i = round(length(allSets)*0.65):length(allSets)
 for i = 1:length(allSets)
     hold on
     p = allSets{i};
     ph(i)=plot(p(:,1)',p(:,2)','b','linewidth',1);
     ely = find(p(:,2)==max(p(:,2)));
     ely = ely(end);
-%     text(p(ely,1),p(ely,2),num2str(i),'fontsize',7,'color', [1 1 1]);
+    text(p(ely,1),p(ely,2),num2str(i),'fontsize',9,'color', 'k');
 end
-
-twoMbar = 2/msfc
-hold on 
-plot([uxl-(2.2/msfc) uxl-(0.2/msfc)],[uyl-(1/msfc) uyl-(1/msfc)],'y','linewidth',4)
-text([uxl-(3/msfc)],[uyl-(1.2/msfc)],'2 meters','fontsize',10,'color','y')
-
-f1 = gcf
-savePDFfunction(f1,[folder subFolder 'trace' imSave])
-return
+% 
+% twoMbar = 2/msfc
+% hold on 
+% plot([uxl-(2.2/msfc) uxl-(0.2/msfc)],[uyl-(1/msfc) uyl-(1/msfc)],'y','linewidth',4)
+% text([uxl-(3/msfc)],[uyl-(1.2/msfc)],'2 meters','fontsize',10,'color','y')
+% 
+% f1 = gcf
+% savePDFfunction(f1,[folder subFolder 'trace' imSave])
+% return
 
 %% find the traces that are longer than the window size, but you only want
 %%% to run this if your not plotting all traces
@@ -83,7 +84,7 @@ if plotFewerTraces == 1
         ph(i)=plot(p(:,1)',p(:,2)','r','linewidth',1);
         ely = find(p(:,2)==max(p(:,2)));
         ely = ely(end);
-%         text(p(ely,1),p(ely,2),num2str(el(i)),'fontsize',7,'color', [1 1 1]);
+        text(p(ely,1),p(ely,2),num2str(el(i)),'fontsize',9,'color', 'k');
     end
 
 end
@@ -96,28 +97,37 @@ ylm = get(gca,'ylim')
 popup = uicontrol('Style', 'pushbutton',...
    'String', 'create line',...
    'Position', [1100 500 80 50],...
+   'UserData', struct('imNum',iNum,'breakLoop','no'),...
+   'Callback', @draw_line_function); 
+
+popup = uicontrol('Style', 'pushbutton',...
+   'String', 'break line',...
+   'Position', [1200 500 80 50],...
+   'UserData', struct('imNum',iNum,'breakLoop','yes'),...
    'Callback', @draw_line_function); 
 
 % text(1.12,0.78,'redo line','units','normalized')
 popup = uicontrol('Style', 'pushbutton',...
    'String', 'redo line',...
    'Position', [1100 400 80 50],...
+   'UserData', struct('imNum',iNum),...
    'Callback', @redo_line_function); 
 
 % text(1.12,0.58,'append line','units','normalized')
 popup = uicontrol('Style', 'pushbutton',...
    'String', 'append line',...
    'Position', [1100 300 80 50],...
+   'UserData', struct('imNum',iNum),...
    'Callback', @append_line_function); 
 
 btn = uicontrol('Style', 'pushbutton', 'String', 'move right',...
     'Position', [1100 175 80 30],...
-    'UserData', struct('xl',xlm,'yl',ylm,'scale',msfc),...
+    'UserData', struct('xl',xlm,'yl',ylm,'imNum',iNum),...
     'Callback', @moveRight_button); 
 
 btn = uicontrol('Style', 'pushbutton', 'String', 'move down',...
     'Position', [1100 137.5 80 30],...
-    'UserData', struct('xl',xlm,'yl',ylm,'scale',msfc),...
+    'UserData', struct('xl',xlm,'yl',ylm,'imNum',iNum),...
     'Callback', @moveDown_button); 
 
 popup = uicontrol('Style', 'popup',...
@@ -125,22 +135,24 @@ popup = uicontrol('Style', 'popup',...
    'move left','move right','move up','move down',...
    'move 1 left','move 1 right','move 1 up','move 1 down'},...
    'Position', [1100 200 80 50],...
-   'UserData', struct('xl',xlm,'yl',ylm,'scale',msfc),...
+   'UserData', struct('xl',xlm,'yl',ylm,'imNum',iNum),...
    'Callback', @window_function); 
 
 btn = uicontrol('Style', 'pushbutton',...
         'String', 'Draw set',...
         'Position', [1100 90 80 30],...
+        'UserData', struct('imNum',iNum),...
         'Callback', @draw_set_function);
 
 btn = uicontrol('Style', 'pushbutton',...
         'String', 'return window',...
         'Position', [1100 90-37.5 80 30],...
+        'UserData', struct('imNum',iNum),...
         'Callback', @lastWindow_function);
 
 
         
-% return
+return
 
 
 %% if you want to find a given line
@@ -160,7 +172,7 @@ for i = 1:length(allSets)
 end
 
 %% if you need to get rid of a line, try this
-[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(17)
+[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(iNum)
 folderStr = [folder subFolder setIn]
 
 load(folderStr)
@@ -200,7 +212,7 @@ end
 % clear all
 xlim=[lxl uxl]
 ylim=[lyl uyl]
-[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(17)
+[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(iNum)
 folderStr = [folder subFolder setIn]
 load(folderStr)
 close all
