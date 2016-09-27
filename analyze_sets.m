@@ -1,16 +1,18 @@
-% clear all
+clear all
 close all
 % 
-% [folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder()
-% folderStr = [folder subFolder setIn]
+[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(7)
+folderStr = [folder subFolder setIn]
+
+df = 10
+num_h = 5
 % 
-% load(folderStr)
+load(folderStr)
 setNum = 'allSets'
-SN = allSets
 jsets = {}
 
 %% densify the sets
-dts = 1
+dts = 0
 if dts == 1
     for i = 1:length(allSets)
 %         sz = size(allSets{i})
@@ -65,8 +67,8 @@ yr = maxy-miny;
 
 h = sqrt(area_xy*(scales.^2))/num_h
 critical_d = sqrt(area_xy*(scales.^2))/750
-% thetaA = [1:5:186];
-thetaA = [76:5:101];
+thetaA = [1:5:186];
+% thetaA = [76:5:101];
 % thetaA = 136
 %%
 
@@ -91,18 +93,18 @@ for t = 1:length(thetaA)
     set_int = {};
     line_length = [];
 
-    close all
-    f1 = figure('units','normalized','outerposition',[0 0 1 1])
-
-    for i = 1:length(allSets)
-    % for i =282
-        hold on
-        p = dense_jsets{i};
-        sz = size(p)';
-        if sz(1)>=2
-            ph(i)=plot(p(:,1)',p(:,2)','k.-','linewidth',1);
-        end
-    end
+%     close all
+%     f1 = figure('units','normalized','outerposition',[0 0 1 1])
+% 
+%     for i = 1:length(allSets)
+%     % for i =282
+%         hold on
+%         p = allSets{i};
+%         sz = size(p)';
+%         if sz(1)>=2
+%             ph(i)=plot(p(:,1)',p(:,2)','k-','linewidth',1);
+%         end
+%     end
 
     xlim([minx maxx])
     ylim([miny maxy])
@@ -113,7 +115,8 @@ for t = 1:length(thetaA)
         for l = 1:max_l
 
             b_sl = b_sl-B;
-
+            
+            %%%this is for plottting the scanline
             min_x_line = (miny-b_sl)/m_sl;
             
             pa = [(maxy-b_sl)/m_sl,maxy];
@@ -129,33 +132,39 @@ for t = 1:length(thetaA)
                 
             hold on
             plot([p1(1) p2(1)],[p1(2) p2(2)],'m-')
-            count_i = 1;
-            int_point = [];
-
-            for i = [1:length(allSets)]
-
-                frac = dense_jsets{i};
-
-                x_sl = frac(:,1);
-                y_sl = (m_sl*x_sl)+b_sl;
-
-                dy = y_sl-frac(:,2);
-
-                min_d = min(abs(dy));
+            
+            %%% this is for finding the intersection
+            int_point = []
+            for ji = 1:length(allSets)
                 
-                if min_d<critical_d
-                    el  = find(abs(dy)==min_d);
-                    el = el(end);
-                    hold on
-                    plot(frac(el,1),frac(el,2),'b.','markersize',10)
-                    int_point(count_i,:) = [frac(el,1),frac(el,2)];
-                    count_i = count_i+1;
-%                     keyboard
-                end
+                js = allSets{ji};
+                y = js(:,2);
+                x = js(:,1);
+                m_j = (y(2:end)-y(1:end-1))./(x(2:end)-x(1:end-1));
+ 
+                m_j(isnan(m_j))=0;
+                m_j(isinf(m_j))=1e4;
+                b_j = y(2:end)-(m_j.*x(2:end));
+                
+                xi = (b_j-b_sl)./(m_sl-m_j);
+                xi(isnan(xi))=0;
+                xi(isinf(xi))=0;
+                yi = m_sl.*xi+b_sl;
+                yi(isnan(yi))=0;
+                yi(isinf(yi))=0;
+                
+                d1 = sqrt((xi-x(1:end-1)).^2+(yi-y(1:end-1)).^2);
+                d2 = sqrt((xi-x(2:end)).^2+(yi-y(2:end)).^2);
+                d3 = sqrt((x(1:end-1)-x(2:end)).^2+(y(1:end-1)-y(2:end)).^2);
+                inBox = logical((d1<d3).*(d2<d3));
+                int_point = [int_point;[xi(inBox),yi(inBox)]];
+                
             end
             set_int{end+1}= int_point;
-            
-
+%             hold on
+%             plot(int_point(:,1),int_point(:,2),'bo')
+%             
+%             keyboard
         end
     end
 
@@ -178,45 +187,52 @@ for t = 1:length(thetaA)
             
             line_length(l) = sqrt(sum((p2-p1).^2));
 
-            hold on
-            plot([p1(1) p2(1)],[p1(2) p2(2)],'m-')
-            count_i = 1;
-            int_point = [];
-            for i = [1:length(allSets)]
-
-                frac = dense_jsets{i};
-
-                x_sl = frac(:,1);
-                y_sl = (m_sl*x_sl)+b_sl;
-
-                dy = y_sl-frac(:,2);
-
-                min_d = min(abs(dy));
+%             hold on
+%             plot([p1(1) p2(1)],[p1(2) p2(2)],'m-')
+                       %%% this is for finding the intersection
+            int_point = []
+            for ji = 1:length(allSets)
                 
-                if min_d<critical_d
-                    el  = find(abs(dy)==min_d);
-                    el = el(end);
-                    hold on
-                    plot(frac(el,1),frac(el,2),'b.','markersize',10)
-                    int_point(count_i,:) = [frac(el,1),frac(el,2)];
-                    count_i = count_i+1;
-                end
-
+                js = allSets{ji};
+                y = js(:,2);
+                x = js(:,1);
+                m_j = (y(2:end)-y(1:end-1))./(x(2:end)-x(1:end-1));
+ 
+                m_j(isnan(m_j))=0;
+                m_j(isinf(m_j))=1e4;
+                b_j = y(2:end)-(m_j.*x(2:end));
+                
+                xi = (b_j-b_sl)./(m_sl-m_j);
+                xi(isnan(xi))=0;
+                xi(isinf(xi))=0;
+                yi = m_sl.*xi+b_sl;
+                yi(isnan(yi))=0;
+                yi(isinf(yi))=0;
+                
+                d1 = sqrt((xi-x(1:end-1)).^2+(yi-y(1:end-1)).^2);
+                d2 = sqrt((xi-x(2:end)).^2+(yi-y(2:end)).^2);
+                d3 = sqrt((x(1:end-1)-x(2:end)).^2+(y(1:end-1)-y(2:end)).^2);
+                inBox = logical((d1<d3).*(d2<d3));
+                int_point = [int_point;[xi(inBox),yi(inBox)]];
+                
             end
-
             set_int{end+1}= int_point;
+%             hold on
+
 %             keyboard
         end
     end
 
 %     pause(2)
-    keyboard
+%     keyboard
     axis equal
     save([folder subFolder 'sl_pts_' num2str(theta) '_' setNum '_' hS '.mat'], 'set_int', 'line_length')
     %% putting the keyboard command here allows you to pause at each set
     %% on scanlines. 
 %     keyboard
 end
+
+return
 
 savePDFfunction(f1,[folder subFolder 'scanline_intersect' imSave '_' hS])
 
