@@ -65,8 +65,7 @@ yr = maxy-miny;
 
 h = sqrt(area_xy*(scales.^2))/num_h
 critical_d = sqrt(area_xy*(scales.^2))/750
-% thetaA = [1:5:186];
-thetaA = [76:5:101];
+thetaA = [1:5:186];
 % thetaA = 136
 %%
 
@@ -100,7 +99,7 @@ for t = 1:length(thetaA)
         p = dense_jsets{i};
         sz = size(p)';
         if sz(1)>=2
-            ph(i)=plot(p(:,1)',p(:,2)','k.-','linewidth',1);
+            ph(i)=plot(p(:,1)',p(:,2)','k-','linewidth',1);
         end
     end
 
@@ -209,8 +208,7 @@ for t = 1:length(thetaA)
         end
     end
 
-%     pause(2)
-    keyboard
+%     keyboard
     axis equal
     save([folder subFolder 'sl_pts_' num2str(theta) '_' setNum '_' hS '.mat'], 'set_int', 'line_length')
     %% putting the keyboard command here allows you to pause at each set
@@ -224,7 +222,7 @@ savePDFfunction(f1,[folder subFolder 'scanline_intersect' imSave '_' hS])
 %% in this section you can find the number of joint sets that intersect the edges of the domain
 
 close all
-f1 = figure
+clc
 
 critical_d = critical_d*5
 
@@ -305,11 +303,11 @@ ljL = length(jL)
 
 ljT = ljLw+ljR+ljU+ljL
 
-etf = ([ljLw,ljR,ljU,ljL,ljT]'/length(allSets))*100
+etf = [ljLw,ljR,ljU,ljL,ljT]//length(allSets)'
 et = [ljLw,ljR,ljU,ljL,ljT]'
 
 save([folder subFolder 'results.mat'],'etf','et')
-savePDFfunction(f1,[folder subFolder 'edges' imSave])
+
 
 
 

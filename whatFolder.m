@@ -55,7 +55,8 @@ if i == 6
     msfc = 1/191.43
 end
 
-
+%%% here is where I started systematically going through and chagning the
+%%% paramteres on Sept 27. 
 if i == 7
     folder = 'D:\Field_data\2013\Summer\Images\JWC\Aug03\GL09\Photogrammetry\GL9PG1ST1\'
     subFolder = 'IMG_0071_analysis\'
@@ -182,10 +183,76 @@ if i == 20
     msfc = 1/233.18
 end
 
+if i == 21
+    folder = 'D:\Field_data\2013\Summer\Images\JWC\July30\Photogrammetry\'
+    subFolder = 'IMG_0905_analysis\'
+    setOut = 'setsAll.mat'
+    imgNum = 'IMG_0905.jpg'
+    imSave = '_0905'
+    msfc = 1/233.18
+end
+
+
+if i == 22
+    folder = 'D:\Field_data\2013\Summer\Images\JWC\GL1\Photogrammetry\July17\GL1PG1ST1\'
+    subFolder = 'IMG_9030_3_analysis\'
+    setOut = 'setsAll.mat'
+    imgNum = 'IMG_9030.jpg'
+    imSave = '_9030'
+    msfc = 1/110.8
+end
+
+if i == 23
+    folder = 'D:\Field_data\2013\Summer\Images\JWC\GL1\Photogrammetry\July17\GL1PG3ST1_6\'
+    subFolder = 'IMG_9228_2_analysis\'
+    setOut = 'setsAll.mat'
+    imgNum = 'IMG_9228.jpg'
+    imSave = '_9228'
+    msfc = 1/108
+end
+
+
+if i == 24
+    folder = 'D:\Field_data\2013\Summer\Images\JWC\GL1\Photogrammetry\July19\GL1PG6ST1_9\'
+    subFolder = 'IMG_0119_2_analysis\'
+    setOut = 'setsAll.mat'
+    imgNum = 'IMG_0119.jpg'
+    imSave = '_0119'
+    msfc = 1/141
+end
+
+
+if i == 25
+    folder = 'D:\Field_data\2013\Summer\Images\JWC\GL1\Photogrammetry\July17\GL1PG1ST2\'
+    subFolder = 'IMG_9049_analysis\'
+    setOut = 'setsAll.mat'
+    imgNum = 'IMG_9049.jpg'
+    imSave = '_9049'
+    msfc = 1/145.32
+end
+
+
+if i == 26
+    folder = 'D:\Field_data\2013\Summer\Images\JWC\Aug03\GL02\Outcrop\GL02OC01\'
+    subFolder = 'IMG_0413_2_analysis\'
+    setOut = 'setsAll.mat'
+    imgNum = 'IMG_0413.jpg'
+    imSave = '_0413'
+    msfc = 1/149.46
+end
+
+if i == 27
+    folder = 'D:\Field_data\2013\Summer\Images\JWC\Aug03\GL02\Outcrop\GL02OC01\'
+    subFolder = 'IMG_0413_1gr_analysis\'
+    setOut = 'setsAll.mat'
+    imgNum = 'IMG_0413.jpg'
+    imSave = '_0413'
+    msfc = 1/1943
+end
 
 
 ws = 2
 ol = (1/8)*ws
 
 
-
+   

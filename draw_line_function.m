@@ -5,17 +5,22 @@ iNum = source.UserData.imNum;
 folderStr = [folder subFolder setIn];
 load(folderStr);
 
-breaker = source.UserData.breakLoop
+folderStr2 = [folder subFolder 'looping.mat']
+loops = 'yes'
+save(folderStr2,'loops')
 
 val = source.Value;
 source.String(val);
     count = 1;
 while count < 100
-    if strcmp(breaker,'no')
+    
+    load([folder subFolder 'looping.mat'])
+    
+    if strcmp(loops,'yes')
         h = imfreehand;
         lin = h.getPosition;
     end
-    if strcmp(breaker,'yes')
+    if strcmp(loops,'no')
         lin = [0,0]
     end
     
@@ -28,6 +33,9 @@ while count < 100
     %         lin = tooMuchCurvature(lin)
     allSets{end+1}= lin(:,:);
     save(folderStr,'allSets','-append');
-    count = count+1;    
+    count = count+1; 
+    
+    load([folder subFolder 'looping.mat'])
+    
 end
 

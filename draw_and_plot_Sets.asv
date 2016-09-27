@@ -1,57 +1,42 @@
 %%% here are some commands that you can use to trace out joint sets in
 %%% images in matlab, then if you want to plot the traces you can run this
 %%% scripts
-
-% clear all
-% close all
-% iNum = 26
-% [folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(iNum)
-% folderStr = [folder subFolder setIn]
+% 
+clear all
+close all
+iNum = 25
+[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(iNum)
+folderStr = [folder subFolder setIn]
 
 close all
-% f1 = figure('units','normalized','outerposition',[0 0 1 1])
-f1 = figure
+f1 = figure('units','normalized','outerposition',[0 0 1 1])
 % A = imread([folder imgNum]);
-% B = imresize(A,1/13);
-% imshow(B)
-
+% B = imresize(A,1/15);
 imshow([folder imgNum])
-
-xlms = get(gca,'xlim')
-ylms = get(gca,'ylim')
-% xlms = [1944 3213] 
-% ylms = [1296 2160]
-% 
-
-% xlms = [599 3792]
-% ylms = [675 2293]
-% 
-% xlms = [53 288]
-% ylms = [52 176]
-
-% xlms = [1351 4310] this is gl2 oco2 good res
-% ylms = [557 2505]
-% xlms = [105 331] %this is gl2 oco2 bad res
-% ylms = [44 194]
+% xlms = get(gca,'xlim')
+% ylms = get(gca,'ylim')
+xlms = [702 3111]
+ylms = [1696 30]
 
 % return
 lxl = xlms(1)
 uxl = xlms(2)
 lyl = ylms(1)
 uyl = ylms(2)
-% xlim([lxl uxl])
-% ylim([lyl uyl])
-% hold on
-% plot([lxl lxl],[lyl uyl],'r-','linewidth',2)
-% hold on
-% plot([uxl uxl],[lyl uyl],'r-','linewidth',2)
-% hold on
-% plot([lxl uxl],[lyl lyl],'r-','linewidth',2)
-% hold on
-% plot([lxl uxl],[uyl uyl],'r-','linewidth',2)
+xlim([lxl uxl])
+ylim([lyl uyl])
+hold on
+plot([lxl lxl],[lyl uyl],'r-','linewidth',2)
+hold on
+plot([uxl uxl],[lyl uyl],'r-','linewidth',2)
+hold on
+plot([lxl uxl],[lyl lyl],'r-','linewidth',2)
+hold on
+plot([lxl uxl],[uyl uyl],'r-','linewidth',2)
 % hold on 
 % plot([uxl-141-200 uxl-200],[uyl-100 uyl-100],'y','linewidth',3)
 load(folderStr)
+
 
 %% if you want to inititate a set, then do the following...BUT BE CAREFUL NOT TO DELETE
 %%% these sets should be saved in source control
@@ -64,25 +49,24 @@ end
 
 %%
 
-% for i = round(length(allSets)*0.5):length(allSets)
+% for i = round(length(allSets)*0.7):length(allSets)
 for i = 1:length(allSets)
     hold on
     p = allSets{i};
     ph(i)=plot(p(:,1)',p(:,2)','b','linewidth',1);
     ely = find(p(:,2)==max(p(:,2)));
     ely = ely(end);
-%     text(p(ely,1),p(ely,2),num2str(i),'fontsize',9,'color', 'k');
+    text(p(ely,1),p(ely,2),num2str(i),'fontsize',9,'color', 'k');
 end
-
-twoMbar = 2/msfc
-hold on 
-plot([uxl-(2.2/msfc) uxl-(0.2/msfc)],[uyl-(1/msfc) uyl-(1/msfc)],'y','linewidth',4)
-text([uxl-(3/msfc)],[uyl-(1.2/msfc)],'2 meters','fontsize',10,'color','y')
-
-f1 = gcf
-savePDFfunction(f1,[folder subFolder 'trace' imSave])
-savefig([folder subFolder 'trace' imSave '.fig'])
-return
+% 
+% twoMbar = 2/msfc
+% hold on 
+% plot([uxl-(2.2/msfc) uxl-(0.2/msfc)],[uyl-(1/msfc) uyl-(1/msfc)],'y','linewidth',4)
+% text([uxl-(3/msfc)],[uyl-(1.2/msfc)],'2 meters','fontsize',10,'color','y')
+% 
+% f1 = gcf
+% savePDFfunction(f1,[folder subFolder 'trace' imSave])
+% return
 
 %% find the traces that are longer than the window size, but you only want
 %%% to run this if your not plotting all traces
@@ -113,15 +97,15 @@ ylm = get(gca,'ylim')
 
 popup = uicontrol('Style', 'pushbutton',...
    'String', 'create line',...
-   'Position', [1100 535 80 50],...
-   'UserData', struct('imNum',iNum),...
+   'Position', [1100 500 80 50],...
+   'UserData', struct('imNum',iNum,'breakLoop','no'),...
    'Callback', @draw_line_function); 
 
 popup = uicontrol('Style', 'pushbutton',...
    'String', 'break line',...
-   'Position', [1100 500 80 30],...
-   'UserData', struct('imNum',iNum),...
-   'Callback', @break_loop_function); 
+   'Position', [1200 500 80 50],...
+   'UserData', struct('imNum',iNum,'breakLoop','yes'),...
+   'Callback', @draw_line_function); 
 
 % text(1.12,0.78,'redo line','units','normalized')
 popup = uicontrol('Style', 'pushbutton',...

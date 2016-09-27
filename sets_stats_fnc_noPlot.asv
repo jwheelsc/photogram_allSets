@@ -30,7 +30,10 @@ for ang = 1:length(thetaA)
         if isempty(set_int{i})==0
             scat_jset = set_int{i};
             [dv,ia] = sort(scat_jset(:,1));
-            jset = scat_jset(ia,:);        
+            jset = scat_jset(ia,:);
+            'here'
+            keyboard
+        
             %%% then compute the distance between points
             dif1 = jset(2:end,:)-jset(1:end-1,:);
             dist_bwp = sqrt(sum(dif1.*dif1,2));
@@ -40,8 +43,12 @@ for ang = 1:length(thetaA)
             %%% here are the number of points for th egiven scanline
             np(i) = length(set_int{i});
         else
-            np(i) = 0        
+            np(i) = 
+        
         end
+        'here'
+        keyboard
+
     end
 
     % and here I have to scale it
@@ -54,9 +61,9 @@ for ang = 1:length(thetaA)
     fq(ang) = 1/spc_mean;
     %%% alternatively, we can compute a frequency based on the mean of the
     %%% number of points for a given line length (scaled)
-%     m_fq(ang) = mean(np./(line_length*msfc));
+    m_fq(ang) = mean(np./(line_length*msfc));
     %%% or the total number of points by the total line length
-    m_fq(ang) = sum(np)./(sum(line_length)*msfc);
+    m_fq(ang) = mean(np./(line_length*msfc));
 
 
 end
@@ -88,7 +95,7 @@ f1 = figure(1)
     set(gca,'fontsize',16)
     grid on
     legend([h1 h1a], {'mean spacing^{-1}','total points per line'},...
-        'location','southwest','fontsize',12)
+        'location','northwest','fontsize',12)
     
 savePDFfunction(f1,[folder subFolder 'scanline_angle' imSave '_' hS])
 save([folder subFolder 'results_' hS '.mat'],'mxx','mxy','mnx','mny','mean_fq',...

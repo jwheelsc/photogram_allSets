@@ -7,11 +7,8 @@ iA = 7
 cellNA = ['T','V','Y','X','Z','AA','AB','AC','AD','AE','AF','AH','S','R','O']
 % for ii = 1:length(cellNA)
 for ii = 7
-%     cellN = cellNA(ii)
-%     iii = iA(ii)
-    
-    cellN = cellNA(1)
-    iii = ii
+    cellN = cellNA(ii)
+    iii = iA(ii)
     
     [folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(iii)
     folderStr = [folder subFolder setIn]
@@ -25,11 +22,12 @@ for ii = 7
     
     for jjj = 1:length(num_hA)
     
-%         run draw_and_plot_Sets.m %% this one you might to comment out some things
-%         keyboard
+        run draw_and_plot_Sets.m %% this one you might to comment out some things
+        keyboard
         
         num_h = num_hA(jjj)
-       
+        keyboard
+        
         run analyze_sets.m
         keyboard
 
@@ -70,10 +68,6 @@ for ii = 7
         sum_length/area_xy,num_joints/area_xy,length_x,length_y,area_xy]'
     cellRange = [cellN '60:' cellN '69']
     xlswrite('D:\Field_data\2013\Summer\Geotech\outcrop_disctontinuity.xlsx',B,cellRange)
-    cellRange = [cellN '72:' cellN '76']
-    xlswrite('D:\Field_data\2013\Summer\Geotech\outcrop_disctontinuity.xlsx',etf,cellRange)
-    cellRange = [cellN '79:' cellN '83']
-    xlswrite('D:\Field_data\2013\Summer\Geotech\outcrop_disctontinuity.xlsx',et,cellRange)
     
 end
 

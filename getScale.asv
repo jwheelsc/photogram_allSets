@@ -2,7 +2,7 @@
 clear all
 close all
 
-[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(25)
+[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(22)
 folderStr = [folder subFolder setIn]
 
 f1 = figure('units','normalized','outerposition',[0 0 1 1])
@@ -48,7 +48,7 @@ end
 return
 %%
 
-load('D:\Field_data\2013\Summer\Images\JWC\GL1\Photogrammetry\July17\GL1PG1ST2\IMG_9049_analysis\scales3d.mat')
+load('D:\Field_data\2013\Summer\Images\JWC\GL1\Photogrammetry\July17\GL1PG1ST2\IMG_9049_analysis\scales2d.mat')
 
 
 
@@ -70,8 +70,8 @@ for i = 1:(length(le(:,1))-1)
     end
 end
 
-d2a = d2./dr
-% save('D:\Field_data\2013\Summer\Images\JWC\GL1\Photogrammetry\July17\GL1PG1ST2\IMG_9049_analysis\scales2d.mat','le','dist2')
+dist2 = d2./110.8
+% save('D:\Field_data\2013\Summer\Images\JWC\GL1\Photogrammetry\July17\GL1PG1ST2\IMG_9049_analysis\scales2d.mat','le','d2')
 
 return
 lin = le

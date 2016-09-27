@@ -30,13 +30,14 @@ for i = 1:length(allSets)
     ph(i)=plot(p(:,1)',p(:,2)','k','linewidth',1);
 end
 
-xlim([minx maxx])
-ylim([miny maxy])
-% length_x = (maxx-minx)/(141)
-% length_y = (maxy-miny)/(141)
-% area_xy = (length_x*length_y)
+xlim([minx maxx]);
+ylim([miny maxy]);
+scales = 1/msfc;
+length_x = (maxx-minx)/scales
+length_y = (maxy-miny)/scales
+area_xy = (length_x*length_y)
 
-
+critical_d = sqrt(area_xy*(scales.^2))/250
 
 %% densify the sets
 densifyLines = 1
@@ -48,7 +49,7 @@ if densifyLines == 1
 %             keyboard
 %         end
 
-        dense_jsets{i} = densify_lines(allSets{i});
+        dense_jsets{i} = densify_lines(allSets{i},df);
 
     end
     allSets = dense_jsets
@@ -87,7 +88,7 @@ for i = 1:length(allSets)-1
        [row,col] = find(abs(dM-mdM)<1e-3);
        row = row(end);
        col = col(end);
-       if mdM < 5
+       if mdM < critical_d
            intPts(count,:) = j1(col,:);
            count = count+1;
        end
@@ -107,8 +108,7 @@ plot(intPts(:,1),intPts(:,2),'o')
 
 f1 = gcf
 savePDFfunction(f1,[folder subFolder 'intersect' imSave])
-save([folder subFolder 'results.mat'],'totalints','-append')
-
+save([folder subFolder 'results_intersections.mat'],'totalints')
 
 
 

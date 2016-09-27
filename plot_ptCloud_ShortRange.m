@@ -7,9 +7,9 @@ close all
 % then plot it. 
 
 % load the pointcloud cloud from the vSFM model
-ptCloud = pcread('D:\Code\photogrammetry\imageSequences\Glaciers\GL7\test3.nvm.cmvs\00\models\option-0000.ply');
+ptCloud = pcread('D:\Code\photogrammetry\imageSequences\Glaciers\GL4\test1.nvm.cmvs\00\models\option-0000.ply');
 % read in just the xyz coordinates and color from the same point clod
-f1 = fopen('D:\Code\photogrammetry\imageSequences\Glaciers\GL7\test3.nvm.cmvs\00\models\option-0000_4ml.ply');
+f1 = fopen('D:\Code\photogrammetry\imageSequences\Glaciers\GL4\test1.nvm.cmvs\00\models\option-0000_4ml.ply');
 a1 = textscan(f1,'%f %f %f %f %f %f %d %d %d');
 xyz = [a1{1} a1{2} a1{3}];
 color = [a1{7} a1{8} a1{9}];
@@ -31,12 +31,29 @@ pcshow(ptCloud)
 %%% scale on the wall.
 
 % read in the camera coordinates from the vSFM model
-f2 = fopen('D:\Code\photogrammetry\imageSequences\Glaciers\GL7\test3.nvm.cmvs\00\centers-0000_4ml.ply');
+f2 = fopen('D:\Code\photogrammetry\imageSequences\Glaciers\GL4\test1.nvm.cmvs\00\centers-0000_4ml.ply');
 a = textscan(f2,'%f %f %f');
 p = [a{1} a{2} a{3}];
 
 [ps,pi] = sort(p(:,1))
 ps = p(pi,:)
+
+hold on
+plot3(ps(:,1),ps(:,2),ps(:,3),'ro','markerfacecolor','b')
+
+
+
+d1 = sqrt(sum((ps(2:end,:)-ps(1:end-1,:)).^2,2))
+mlpxpm = d1/6
+mean(mlpxpm)
+std(mlpxpm)
+
+
+
+
+return
+
+
 
 
 % clust = kmeans(p(:,1),3)
@@ -83,12 +100,11 @@ mlpxpm = mCd/cCd
 
 % s3 scale bars
 
-p1 = [-0.8252 -0.7437 1.719]
-p2 = [-0.8629 -0.8215 1.752]
-p3 = [-0.879 -0.7537 1.728]
-p4 = [-0.7811 -0.7598 1.71]
-p5 = [-0.7465 -0.7107 1.715]
-scPts = [p1;p2;p3;p4;p5]
+p1 = [1.403 -1.025 6.005]
+p2 = [0.6984 -0.9131 5.965]
+p3 = [1.65 -0.6422 5.376]
+p4 = [1.839 -0.7759 5.282]
+scPts = [p1;p2;p3;p4]
 
 hold on
 plot3(p1(1),p1(2),p1(3),'ro','markerfacecolor','y')
@@ -102,9 +118,6 @@ text(p3(1),p3(2),p3(3),num2str(3), 'fontsize',14,'color','r')
 hold on
 plot3(p4(1),p4(2),p4(3),'ro','markerfacecolor','y')
 text(p4(1),p4(2),p4(3),num2str(4), 'fontsize',14,'color','r')
-hold on
-plot3(p5(1),p5(2),p5(3),'ro','markerfacecolor','y')
-text(p5(1),p5(2),p5(3),num2str(5), 'fontsize',14,'color','r')
 
 count = 1
 dist3d = []
@@ -114,10 +127,10 @@ for i = 1:length(scPts)-1
         count = count+1 
     end
 end
-dist3d = dist3d/mlpxpm
-save('D:\Field_data\2013\Summer\Images\JWC\Aug01\GL7\Photogrammetry\GL7PG1ST2\IMG_1348_analysis\scales3d.mat','dist3d')
+dist3d = dist3d/0.1525
+save('D:\Field_data\2013\Summer\Images\JWC\July30\Photogrammetry\IMG_0905_analysis\scales3d.mat','dist3d')
 f1 = gcf
-savePDFfunction(f1,'D:\Field_data\2013\Summer\Images\JWC\Aug01\GL7\Photogrammetry\GL7PG1ST2\IMG_1348_analysis\model3d')
+savePDFfunction(f1,'D:\Field_data\2013\Summer\Images\JWC\July30\Photogrammetry\IMG_0905_analysis\model3d')
 
 return
 
