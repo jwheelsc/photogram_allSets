@@ -13,12 +13,23 @@ for i = 1:length(allSets)
     p = allSets{i};
     ph(i)=plot(p(:,1)',p(:,2)','k','linewidth',1);
 end
-        
+
+%%
+count = 1
+for i = 1:length(allSets)
+    a = allSets{i};
+    if length(a(:,1))>1
+        allSets2{count} = a;
+        count = count+1;
+    end
+end
+
+allSets = allSets2        
     
 
 %% how much does a set intersect itself?
-intPts = [];
-for i1 = 1:length(allSets)-1
+% intPts = [];
+for i1 = 2702:length(allSets)-1
     j1 = allSets{i1};
     j1x = j1(:,1);
     j1y = j1(:,2);
@@ -28,6 +39,8 @@ for i1 = 1:length(allSets)-1
     m1(isnan(m1)) = 0;
     b1 = j1y(2:end)-(j1x(2:end).*m1);
     l1 = length(b1);
+    
+%     keyboard
 
     for i2 = i1+1:length(allSets)
         j2 = allSets{i2};
@@ -82,11 +95,13 @@ for i1 = 1:length(allSets)-1
         
         logiT = logical(logi1.*logi2);
         xI = xi(logiT);
+        xI = xI(1);
         yI = yi(logiT);
-        if isempty(xI)==0
-            xI = xI(1);
-            yI = yI(1);
-        end
+        yI = yI(1)
+        
+%         if isempty(xI)==0
+%             keyboard
+%         end
         
         intPts = [intPts;[xI,yI]];
         
@@ -94,13 +109,7 @@ for i1 = 1:length(allSets)-1
     end
     i1
 end
-
-hold on
-plot(intPts(:,1),intPts(:,2),'b.','markersize',10)
-f1 = gcf
-savePDFfunction(f1,[folder subFolder 'intersect' imSave])
-totalints = length(intPts(:,1))
-save([folder subFolder 'results_intersections.mat'],'totalints')
+    return
     
 %     
 %         

@@ -7,37 +7,52 @@ iA = 7
 cellNA = ['T','V','Y','X','Z','AA','AB','AC','AD','AE','AF','AH','S','R','O']
 % for ii = 1:length(cellNA)
 for ii = 7
-    cellN = cellNA(ii)
-    iii = iA(ii)
     
-    [folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(iii)
+    cellN = 'T'
+    [folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(ii)
     folderStr = [folder subFolder setIn]
     load(folderStr)    
     
-%     df = 2
-%     run analyze_sets_intersections.m
-    df = 10
+    count = 1
+    for i = 1:length(allSets)
+        a = allSets{i};
+        if length(a(:,1))>1
+            allSets2{count} = a;
+            count = count+1;
+        end
+    end
+
+    allSets = allSets2
     
+    
+    run analyze_sets_intersections.m
+    return
+    
+    run findWindowSize
+%     run windowEdges
+    
+%     run analyze_sets_intersections.m
+
+    thetaA = [1:5:186];
     num_hA = [5,10,20];
     
     for jjj = 1:length(num_hA)
     
-        run draw_and_plot_Sets.m %% this one you might to comment out some things
-        keyboard
+%         run draw_and_plot_Sets.m %% this one you might to comment out some things
+%         keyboard
         
         num_h = num_hA(jjj)
-        keyboard
-        
+       
         run analyze_sets.m
         keyboard
 
         run sets_stats.m
         keyboard
 
-        run sets_stats_fnc_noPlot.m
+        run computeFrequency.m
         keyboard
 
-        load([folder subFolder 'results_' hS '.mat'])
+%         load([folder subFolder 'results_' hS '.mat'])
 
 %         ['the max frequency is ' num2str(mxy)]
 %         ['the min frequency is ' num2str(mny)]
@@ -63,11 +78,17 @@ for ii = 7
         
     end
     
-    load([folder subFolder 'results_intersections.mat'])
+%     load([folder subFolder 'results_intersections.mat'])
     B = [mean_l,num_joints,sum_length,totalints,totalints/area_xy,...
         sum_length/area_xy,num_joints/area_xy,length_x,length_y,area_xy]'
     cellRange = [cellN '60:' cellN '69']
     xlswrite('D:\Field_data\2013\Summer\Geotech\outcrop_disctontinuity.xlsx',B,cellRange)
+    cellRange = [cellN '72:' cellN '76']
+    xlswrite('D:\Field_data\2013\Summer\Geotech\outcrop_disctontinuity.xlsx',etf,cellRange)
+    cellRange = [cellN '79:' cellN '83']
+    xlswrite('D:\Field_data\2013\Summer\Geotech\outcrop_disctontinuity.xlsx',et,cellRange)
+    cellRange = [cellN '85:' cellN '85']
+    xlswrite('D:\Field_data\2013\Summer\Geotech\outcrop_disctontinuity.xlsx',et,cellRange)
     
 end
 

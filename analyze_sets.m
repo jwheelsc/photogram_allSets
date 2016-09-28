@@ -1,42 +1,12 @@
-clear all
-close all
+% clear all
+% close all
+% % 
+% [folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(7)
+% folderStr = [folder subFolder setIn]
+% num_h = 5
 % 
-[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(7)
-folderStr = [folder subFolder setIn]
-
-df = 10
-num_h = 5
-% 
-load(folderStr)
-setNum = 'allSets'
-jsets = {}
-
-%% densify the sets
-dts = 0
-if dts == 1
-    for i = 1:length(allSets)
-%         sz = size(allSets{i})
-% %         if sz(1)<2
-% %             i
-% %             keyboard
-% %         end
-
-        dense_jsets{i} = densify_lines(allSets{i},msfc);
-
-    end
-end
-%% find some bounding boxesthe bounding box of the entire set
-for i = 1:length(allSets)
-    lin = allSets{i};
-    mnx(i) = min(lin(:,1));
-    mny(i) = min(lin(:,2));
-    mxx(i) = max(lin(:,1));
-    mxy(i) = max(lin(:,2));
-end 
-miny = min(mny)
-maxy = max(mxy)
-minx = min(mnx)
-maxx = max(mxx)
+% load(folderStr)
+% jsets = {}
 
 %% plot all the lines
 % close all
@@ -49,45 +19,31 @@ maxx = max(mxx)
 %     ph(i)=plot(p(:,1)',p(:,2)','k.+','linewidth',1);
 % end
 
-xlim([minx maxx]);
-ylim([miny maxy]);
 
-scales = 1/(msfc);
-length_x = (maxx-minx)/(scales);
-length_y = (maxy-miny)/(scales);
-area_xy = (length_x*length_y);
+%% now loop through all angles
 
-hS = num2str(num_h)
-
-save([folder subFolder 'results_' hS '.mat'],'length_x','length_y','area_xy')
-
-
-%% create a scaline line, and find the intersections
-yr = maxy-miny;
+setNum = 'allSets'
 
 h = sqrt(area_xy*(scales.^2))/num_h
-critical_d = sqrt(area_xy*(scales.^2))/750
-thetaA = [1:5:186];
-% thetaA = [76:5:101];
-% thetaA = 136
-%%
+hS = num2str(num_h)
+
+% thetaA = [1:5:186];
 
 for t = 1:length(thetaA)
 
-    theta = thetaA(t);
+    theta = thetaA(t)
     m_sl = tan(theta*pi/180); %slope in radians
     B = abs(h/sin((90-theta)*pi/180)); %this is the offset in y for lines a distance of h apart
     if theta < 90
-        bf = (m_sl*minx)/B %the scale factor for the first intercept that will keep the upper line in the box
-        b_sl = maxy-(B*bf) %the first intercept
-        max_l = floor((miny-(m_sl*maxx)-maxy)/-B)-ceil(bf) % the number of lines that will be in the box
+        bf = (m_sl*minx)/B; %the scale factor for the first intercept that will keep the upper line in the box
+        b_sl = maxy-(B*bf); %the first intercept
+        max_l = floor((miny-(m_sl*maxx)-maxy)/-B)-ceil(bf); % the number of lines that will be in the box
     else 
         bf = (miny-(m_sl*minx))/B;
-        b_sl = B*bf
-        max_l = floor((maxy-(m_sl*maxx))/B)-ceil(bf)
+        b_sl = B*bf;
+        max_l = floor((maxy-(m_sl*maxx))/B)-ceil(bf);
     end
 
-    count = 1;
     min_x_line = 0;
 
     set_int = {};
@@ -134,7 +90,7 @@ for t = 1:length(thetaA)
             plot([p1(1) p2(1)],[p1(2) p2(2)],'m-')
             
             %%% this is for finding the intersection
-            int_point = []
+            int_point = [];
             for ji = 1:length(allSets)
                 
                 js = allSets{ji};
@@ -189,8 +145,8 @@ for t = 1:length(thetaA)
 
 %             hold on
 %             plot([p1(1) p2(1)],[p1(2) p2(2)],'m-')
-                       %%% this is for finding the intersection
-            int_point = []
+           %%% this is for finding the intersection
+            int_point = [];
             for ji = 1:length(allSets)
                 
                 js = allSets{ji};
@@ -217,115 +173,17 @@ for t = 1:length(thetaA)
                 
             end
             set_int{end+1}= int_point;
-%             hold on
-
-%             keyboard
         end
     end
 
 %     pause(2)
 %     keyboard
-    axis equal
+%     axis equal
     save([folder subFolder 'sl_pts_' num2str(theta) '_' setNum '_' hS '.mat'], 'set_int', 'line_length')
-    %% putting the keyboard command here allows you to pause at each set
-    %% on scanlines. 
-%     keyboard
 end
 
-return
+% savePDFfunction(f1,[folder subFolder 'scanline_intersect' imSave '_' hS])
 
-savePDFfunction(f1,[folder subFolder 'scanline_intersect' imSave '_' hS])
-
-
-%% in this section you can find the number of joint sets that intersect the edges of the domain
-
-close all
-f1 = figure
-
-critical_d = critical_d*5
-
-for i = 1:length(allSets)
-% for i =282
-    hold on
-    p = allSets{i};
-    ph(i)=plot(p(:,1)',p(:,2)','k-','linewidth',1);
-end
-
-%%% left edge
-
-SN =  dense_jsets;
-
-count = 1
-jL = []
-for i = 1:length(SN);
-    jnt = SN{i};    
-    el = find(abs(jnt(:,1)-minx)<critical_d);
-    if isempty(el)==0
-        jL(count) = i
-        count = count+1;
-        hold on
-        plot(jnt(:,1),jnt(:,2),'b.','markersize',10)
-    end
-end
-
-%%% right edge
-
-count = 1;
-jR = [];
-for i = 1:length(SN)
-    jnt = SN{i};    
-    el = find(abs(jnt(:,1)-maxx)<critical_d);
-    if isempty(el)==0
-        jR(count) = i
-        count = count+1;        
-        hold on
-        plot(jnt(:,1),jnt(:,2),'b.','markersize',10)
-    end
-end
-
-%%% upper edge
-
-count = 1
-jU = []
-for i = 1:length(SN)
-    jnt = SN{i};    
-    el = find(abs(jnt(:,2)-maxy)<critical_d);
-    if isempty(el)==0
-        jU(count) = i
-        count = count+1;
-        hold on
-        plot(jnt(:,1),jnt(:,2),'b.','markersize',10)
-    end
-end
-
-%%% lower edge
-
-count = 1;
-jLw = [];
-for i = 1:length(SN)
-    jnt = SN{i};    
-    el = find(abs(jnt(:,2)-miny)<critical_d);
-    if isempty(el)==0
-        jLw(count) = i
-        count = count+1;
-        hold on
-        plot(jnt(:,1),jnt(:,2),'b.','markersize',10)
-    end
-    
-end
-
-ljLw = length(jLw)
-ljR = length(jR)
-ljU = length(jU)
-ljL = length(jL)
-
-ljT = ljLw+ljR+ljU+ljL
-
-etf = ([ljLw,ljR,ljU,ljL,ljT]'/length(allSets))*100
-et = [ljLw,ljR,ljU,ljL,ljT]'
-
-save([folder subFolder 'results.mat'],'etf','et')
-savePDFfunction(f1,[folder subFolder 'edges' imSave])
 
 
 

@@ -8,7 +8,7 @@ close all
 
 %%
 % thetaA = [5:5:175];
-thetaA = [1:5:186];
+
 jset = []
 
 for ang = 1:length(thetaA)
@@ -37,7 +37,7 @@ for ang = 1:length(thetaA)
             %%% i create a massive cell where the distance between points is
             %%% appended onto the next scanline
             t_dist_bwp = [t_dist_bwp;dist_bwp];
-            %%% here are the number of points for th egiven scanline
+            %%% here are the number of points for the egiven scanline
             np(i) = length(set_int{i});
         else
             np(i) = 0        
@@ -49,6 +49,7 @@ for ang = 1:length(thetaA)
     %%% compute a few stats
     spc_mean = mean(t_dist_bwp1);
     spc_std = std(t_dist_bwp1);
+    fq_std(ang) = 1./spc_std; 
     %%% here im saying that the frequncy is the inverse of the mean
     %%% spacing
     fq(ang) = 1/spc_mean;
@@ -92,6 +93,6 @@ f1 = figure(1)
     
 savePDFfunction(f1,[folder subFolder 'scanline_angle' imSave '_' hS])
 save([folder subFolder 'results_' hS '.mat'],'mxx','mxy','mnx','mny','mean_fq',...
-    'thetaA','fq','m_fq','-append')
+    'thetaA','fq','m_fq','fq_std')
 
     
