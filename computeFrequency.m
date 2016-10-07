@@ -77,18 +77,18 @@ f1 = figure(1)
         mnx = thetaA(el)
         text(mnx,mny,num2str(mny),'fontsize',fs2)
     hold on
-    h1a = plot(thetaA,fq,'r--o')
-%         my = max(fq)
-%         el = find(fq==my)
-%         mx = thetaA(el)
-%         text(mx,my,num2str(my),'fontsize',fs2)
+%     h1a = plot(thetaA,fq,'r--o')
+        my = max(fq)
+        el = find(fq==my)
+        mx = thetaA(el)
+        text(mx,my,num2str(my),'fontsize',fs2)
     
     text(0.7,0.1,['mean = ' num2str(mean_fq)],'units','normalized','fontsize',12)
     ylabel('Joint frequency (\lambda)')
     xlabel('Scanline angle (\theta)')
     set(gca,'fontsize',16)
     grid on
-    legend([h1 h1a], {'mean spacing^{-1}','total points per line'},...
+    legend([h1 ], {'mean spacing^{-1}'},...
         'location','southwest','fontsize',12)
     
 savePDFfunction(f1,[folder subFolder 'scanline_angle' imSave '_' hS])

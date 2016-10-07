@@ -4,7 +4,7 @@
 
 % clear all
 % close all
-% iNum = 26
+% iNum = 27
 % [folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(iNum)
 % folderStr = [folder subFolder setIn]
 
@@ -12,35 +12,30 @@ close all
 % f1 = figure('units','normalized','outerposition',[0 0 1 1])
 f1 = figure
 % A = imread([folder imgNum]);
-% B = imresize(A,1/13);
+% B = imresize(A,1/4);
 % imshow(B)
+
+% A = imread([folder imgNum]);
+% B = imrotate(A,-52.6);
+% imshow(B)
+% 
 
 imshow([folder imgNum])
 
+
 xlms = get(gca,'xlim')
 ylms = get(gca,'ylim')
-% xlms = [1944 3213] 
-% ylms = [1296 2160]
-% 
 
-% xlms = [599 3792]
-% ylms = [675 2293]
-% 
-% xlms = [53 288]
-% ylms = [52 176]
 
-% xlms = [1351 4310] this is gl2 oco2 good res
-% ylms = [557 2505]
-% xlms = [105 331] %this is gl2 oco2 bad res
-% ylms = [44 194]
+% xlms=[168 933]
+% ylms=[191 557]
 
-% return
 lxl = xlms(1)
 uxl = xlms(2)
 lyl = ylms(1)
 uyl = ylms(2)
-% xlim([lxl uxl])
-% ylim([lyl uyl])
+xlim([lxl uxl])
+ylim([lyl uyl])
 % hold on
 % plot([lxl lxl],[lyl uyl],'r-','linewidth',2)
 % hold on
@@ -53,14 +48,25 @@ uyl = ylms(2)
 % plot([uxl-141-200 uxl-200],[uyl-100 uyl-100],'y','linewidth',3)
 load(folderStr)
 
+twoMbar = 2/msfc
+wx= uxl-lxl
+hy = uyl-lyl
+yvr = 8
+hold on 
+plot([uxl-(wx*(1/yvr)) uxl-(wx*(1/yvr))-(twoMbar)],[uyl-(hy*(1/yvr)) uyl-(hy*(1/yvr))],'y','linewidth',20)
+text([uxl-(wx*(1/yvr))-(twoMbar)],[uyl-(hy*(1/yvr))-(hy*(1/20))],'2 meter','fontsize',62,'color','y')
+text([uxl-(wx*(1/yvr))-(twoMbar)],[uyl-(hy*(1/yvr))+(hy*(1/10))],imText,'fontsize',50,'color','y')
+
+savePDFfunction(f1,['D:\Code\photog_allSets\figures\outcropImages_trace_fullImage\' subFolder(1:end-1)])
+
 %% if you want to inititate a set, then do the following...BUT BE CAREFUL NOT TO DELETE
 %%% these sets should be saved in source control
-RUNTHIS = 'No'
-
-if strcmp(RUNTHIS,'YES')
-    allSets = []
-save(folderStr,'allSets')
-end
+% RUNTHIS = 'No'
+% 
+% if strcmp(RUNTHIS,'YES')
+%     allSets = []
+% save(folderStr,'allSets')
+% end
 
 %%
 
@@ -68,20 +74,28 @@ end
 for i = 1:length(allSets)
     hold on
     p = allSets{i};
-    ph(i)=plot(p(:,1)',p(:,2)','b','linewidth',1);
+    ph(i)=plot(p(:,1)',p(:,2)','r','linewidth',6);
     ely = find(p(:,2)==max(p(:,2)));
     ely = ely(end);
 %     text(p(ely,1),p(ely,2),num2str(i),'fontsize',9,'color', 'k');
 end
 
-twoMbar = 2/msfc
-hold on 
-plot([uxl-(2.2/msfc) uxl-(0.2/msfc)],[uyl-(1/msfc) uyl-(1/msfc)],'y','linewidth',4)
-text([uxl-(3/msfc)],[uyl-(1.2/msfc)],'2 meters','fontsize',10,'color','y')
 
+
+% twoMbar = 1/msfc
+% wx= uxl-lxl
+% hy = uyl-lyl
+% yvr = 8
+% hold on 
+% plot([uxl-(wx*(1/yvr)) uxl-(wx*(1/yvr))-(twoMbar)],[uyl-(hy*(1/yvr)) uyl-(hy*(1/yvr))],'y','linewidth',4)
+% text([uxl-(wx*(1/yvr))-(twoMbar)],[uyl-(hy*(1/yvr))-(hy*(1/20))],['1 meters --- GL ' glLabs],'fontsize',14,'color','y')
+% 
+
+xlim(xlms)
+ylim(ylms)
 f1 = gcf
-savePDFfunction(f1,[folder subFolder 'trace' imSave])
-savefig([folder subFolder 'trace' imSave '.fig'])
+savePDFfunction(f1,['D:\Code\photog_allSets\figures\outcropImages_trace_fullImage\' subFolder(1:end-1) '_trace'])
+% savefig([folder subFolder 'trace' imSave '.fig'])
 return
 
 %% find the traces that are longer than the window size, but you only want

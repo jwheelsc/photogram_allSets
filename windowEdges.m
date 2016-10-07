@@ -1,10 +1,9 @@
-
 %% in this section you can find the number of joint sets that intersect the edges of the domain
 
 close all
 f1 = figure
 
-critical_d = 1e-4/msfc
+critical_d = 0.1/msfc
 
 for i = 1:length(allSets)
 % for i =282
@@ -13,14 +12,15 @@ for i = 1:length(allSets)
     ph(i)=plot(p(:,1)',p(:,2)','k-','linewidth',1);
 end
 
-for kk = 1:length(allSets)
-    if length(allSets{kk}(:,1))>2
-        [SN{kk}] = densify_lines(allSets{kk},msfc);
-    else
-        SN{kk} = allSets{kk}
-    end
-end
+% for kk = 1:length(allSets)
+%     if length(allSets{kk}(:,1))>2
+%         [SN{kk}] = densify_lines(allSets{kk},msfc);
+%     else
+%         SN{kk} = allSets{kk}
+%     end
+% end
 
+SN = allSets
 %%% left edge
 
 count = 1
@@ -92,5 +92,5 @@ ljT = ljLw+ljR+ljU+ljL;
 etf = ([ljLw,ljR,ljU,ljL,ljT]'/length(allSets))*100;
 et = [ljLw,ljR,ljU,ljL,ljT]';
 
-save([folder subFolder 'results.mat'],'etf','et','append')
+save([folder subFolder 'results.mat'],'etf','et','-append')
 savePDFfunction(f1,[folder subFolder 'edges' imSave])

@@ -72,7 +72,7 @@ if i == 8
     setOut = 'setsAll.mat'
     imgNum = 'IMG_0273.jpg'
     imSave = '_0273'
-    msfc = 1/108
+    msfc = 1/399.2
 end
 
 if i == 9
@@ -162,7 +162,7 @@ if i == 18
     setOut = 'setsAll.mat'
     imgNum = 'IMG_0794.jpg'
     imSave = '_0794'
-    msfc = 1/125.9161
+    msfc = 1/181
 end
 
 if i == 19
@@ -250,6 +250,33 @@ if i == 27
     msfc = 1/1943
 end
 
+
+if i == 28
+    folder = 'D:\Field_data\2013\Summer\Images\JWC\Aug04\GL14\Photogrammetry\Gl14PG2ST2\'
+    subFolder = 'IMG_0305_test_analysis\'
+    setOut = 'setsAll.mat'
+    imgNum = 'IMG_0305.jpg'
+    imSave = '_0305'
+    msfc = 1/261.56
+end
+
+if i == 29
+    folder = 'D:\Field_data\2013\Summer\Images\JWC\Aug04\GL16\Outcrop\GL16OC01\'
+    subFolder = 'IMG_0538_2_analysis\'
+    setOut = 'setsAll.mat'
+    imgNum = 'IMG_0538.jpg'
+    imSave = '_0538'
+    msfc = 1/1018
+end
+
+if i == 30
+    folder = 'D:\Field_data\2013\Summer\Images\JWC\Aug03\GL02\Outcrop\GL02OC01\'
+    subFolder = 'IMG_0413_3_analysis\'
+    setOut = 'setsAll.mat'
+    imgNum = 'IMG_0413.jpg'
+    imSave = '_0413'
+    msfc = 4/1943
+end
 
 ws = 2
 ol = (1/8)*ws

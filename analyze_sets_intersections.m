@@ -100,7 +100,7 @@ plot(intPts(:,1),intPts(:,2),'b.','markersize',10)
 f1 = gcf
 savePDFfunction(f1,[folder subFolder 'intersect' imSave])
 totalints = length(intPts(:,1))
-save([folder subFolder 'results_intersections.mat'],'totalints')
+save([folder subFolder 'results_intersections.mat'],'totalints','intPts')
     
 %     
 %         

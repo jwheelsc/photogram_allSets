@@ -1,10 +1,11 @@
 % clear all
-close all
-% 
-% [folder, subFolder, imgNum, seIn, imSave, msfc, ws, ol] = whatFolder()
+
+% %  
+% [folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(20)
 % folderStr = [folder subFolder setIn]
 % 
 % load(folderStr)
+
 
 %% this section is to get the distriubtion of lengths of all the sets, and the first two section of this script should first be run
 
@@ -17,6 +18,7 @@ fs = 16;
     
 SN = allSets;
     
+d = []
 for i = 1:length(SN)
     lin = SN{i};
     diff = lin(2:end,:)-lin(1:end-1,:);
@@ -45,10 +47,20 @@ hold on
 h2 = plot(xx,yy2,'b','linewidth',2);
 set(gca,'fontsize',fs)
 hold on
-plot([mean_l mean_l],get(gca,'ylim'),'k')
-legend([h1 h2], {'negative exponential','lognormal'},'location','northeast','fontsize',12)
+h3 = plot([mean_l mean_l],get(gca,'ylim'),'k')
 
-savePDFfunction(fL,[folder subFolder 'dist' imSave])
+dX = quantile(d_sc1,[0.25,0.5,0.75])
+hold on
+h4 = plot([dX(1) dX(1)],get(gca,'ylim'),'b--','linewidth',1)
+hold on
+h5 = plot([dX(2) dX(2)],get(gca,'ylim'),'r--','linewidth',1)
+hold on
+h6 = plot([dX(3) dX(3)],get(gca,'ylim'),'m--','linewidth',1)
+
+legend([h1 h2 h3 h4 h5 h6], {'negative exponential','lognormal','mean','D_{25}','median (D_{50})','D_{75}'},'location','southeast','fontsize',12)
+
+
+% savePDFfunction(fL,[folder subFolder 'dist' imSave])
 %% this is a section to get the total length of a joint set and the number of joints, run the first two sections
 SN = allSets;
 for i = 1:length(SN)
@@ -58,7 +70,9 @@ for i = 1:length(SN)
 end
 sum_length = sum(d*msfc);
 num_joints = length(SN); 
-save([folder subFolder 'results.mat'],'mean_l','std_l','sum_length','num_joints','-append')
+
+dX'
+% save([folder subFolder 'results.mat'],'mean_l','std_l','sum_length','num_joints','dX','-append')
 
     
     

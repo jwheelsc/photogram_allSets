@@ -179,13 +179,14 @@ for t = 1:length(thetaA)
     end
 
     pause(0.1)
+    savePDFfunction(f1,['D:\Documents\Presentations\NWG2016\scanline\SI_' num2str(theta)])
 %     keyboard
 %     axis equal
-    save([folder subFolder 'sl_pts_' num2str(theta) '_' setNum '_' hS '.mat'], 'set_int', 'line_length')
+%     save([folder subFolder 'sl_pts_' num2str(theta) '_' setNum '_' hS '.mat'], 'set_int', 'line_length')
 end
 
 % savePDFfunction(f1,[folder subFolder 'scanline_intersect' imSave '_' hS])
-
+% 
 
 
 

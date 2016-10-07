@@ -2,13 +2,14 @@
 clear all
 close all
 
-[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(25)
+[folder, subFolder, imgNum, setIn, imSave, msfc, ws, ol] = whatFolder(18)
 folderStr = [folder subFolder setIn]
 
 f1 = figure('units','normalized','outerposition',[0 0 1 1])
 imshow([folder imgNum])
 
-   
+% imshow('D:\Field_data\2013\Summer\Images\JWC\Aug03\GL11_Duke\Photogrammetry\GL11PG1ST1_7\IMG_0268.JPG')   
+
 
 %%
 
@@ -20,7 +21,8 @@ l3 = ginput(1)
 % keyboard
 l4 = ginput(1)
 % keyboard
-le = [l1;l2;l3;l4]
+l5 = ginput(1)
+le = [l1;l2;l3;l4;l5]
 
 % le = lin
 count = 1
@@ -33,8 +35,8 @@ for i = 1:(length(le(:,1))-1)
     end
 end
 
-load('D:\Field_data\2013\Summer\Images\JWC\July30\Photogrammetry\IMG_0905_analysis\scales2d.mat')
-pxpm = d2./d2a
+load('D:\Field_data\2013\Summer\Images\JWC\Aug07\GL20_Maxwell\Photogrammetry\GL20PG1ST1_X\IMG_0794_analysis\scales.mat')
+pxpm = d2./dist3d
 mpx = mean(pxpm)
 spx = std(pxpm)
 

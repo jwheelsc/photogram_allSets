@@ -1,508 +1,237 @@
 clear variables
 
-[dat, written] = xlsread('D:\Field_data\2013\Summer\Geotech\outcrop_disctontinuity.xlsx',1,'A1:AJ43');
+[dat, written] = xlsread('D:\Field_data\2013\Summer\Geotech\outcrop_disctontinuity.xlsx',1,'A1:AN102');
 vars = written(:,1);
-msLogi = dat(strcmp(vars,'rock type'),:)== 1;
-mxLogi = dat(strcmp(vars,'rock type'),:)== 2;
-stLogi = dat(strcmp(vars,'surge type'),:)== 1;
-nstLogi = dat(strcmp(vars,'surge type'),:)== 2;
+plotOn = logical(dat(strcmp(vars,'plot?'),:));
 
-glaciers = dat(strcmp(vars,'Glacier'),:); 
-labels = written(2,2:end); 
-maxFreq = dat(strcmp(vars,'max freq'),:);
-minFreq = dat(strcmp(vars,'min freq'),:) ;
-meanFreq = dat(strcmp(vars,'mean freq'),:);
-numJnts = dat(strcmp(vars,'num joints'),:);
-totJntLength = dat(strcmp(vars,'total joint length'),:);
-numInts = dat(strcmp(vars,'intersections'),:);
-IntPA = dat(strcmp(vars,'intersectionsPerarea'),:);
-JntLgthPA = dat(strcmp(vars,'joint lengthPerarea'),:);
-JntsPA = dat(strcmp(vars,'jointsPerarea'),:)
-LX = dat(strcmp(vars,'length x (m)'),:);
-LY = dat(strcmp(vars,'length y (m)'),:);
-AR = dat(strcmp(vars,'area (m2)'),:);
-pxpm = dat(strcmp(vars,'scale factor (px/m)'),:);
+msLogi = dat(strcmp(vars,'rock type'),plotOn)== 1;
+mxLogi = dat(strcmp(vars,'rock type'),plotOn)== 2;
+stLogi = dat(strcmp(vars,'surge type'),plotOn)== 1;
+ptLogi = dat(strcmp(vars,'rock type'),plotOn)== 3;
+nstLogi = dat(strcmp(vars,'surge type'),plotOn)== 2;
 
-ftNAN = (isnan(maxFreq)==0)
+glaciers = dat(strcmp(vars,'Glacier'),plotOn); 
+labels = written(2,2:end);
+labels = labels(plotOn)
+maxFreq = dat(strcmp(vars,'max freq 40'),plotOn);
+minFreq = dat(strcmp(vars,'min freq 40'),plotOn) ;
+meanFreq = dat(strcmp(vars,'mean freq 40'),plotOn);
+meanLgth = dat(strcmp(vars,'mean length'),plotOn);
+stdLgth = dat(strcmp(vars,'std length'),plotOn);
+numJnts = dat(strcmp(vars,'num joints'),plotOn);
+totJntLength = dat(strcmp(vars,'total joint length'),plotOn);
+numInts = dat(strcmp(vars,'intersections'),plotOn);
+IntPA = dat(strcmp(vars,'intersectionsPerarea'),plotOn);
+JntLgthPA = dat(strcmp(vars,'joint lengthPerarea'),plotOn);
+JntsPA = dat(strcmp(vars,'jointsPerarea'),plotOn)
+LX = dat(strcmp(vars,'length x (m)'),plotOn);
+LY = dat(strcmp(vars,'length y (m)'),plotOn);
+AR = dat(strcmp(vars,'area (m2)'),plotOn);
+pxpm = dat(strcmp(vars,'scale factor (px/m)'),plotOn);
+err = dat(strcmp(vars,'error m'),plotOn);
+group_4 = dat(strcmp(vars,'group_4'),plotOn);
+group_rk = dat(strcmp(vars,'group_rk'),plotOn);
+l_d25 = dat(strcmp(vars,'l_d25'),plotOn);
+l_d50 = dat(strcmp(vars,'l_d50'),plotOn);
+l_d75 = dat(strcmp(vars,'l_d75'),plotOn);
 
-%%
+%%% make some structure arrays
 
+dataS = struct('glaciers',glaciers,'maxF',maxFreq,'minF',minFreq,'P10',meanFreq,'nJ',numJnts,...
+    'tlJ',totJntLength,'nI',numInts,'I20',IntPA,'P21',JntLgthPA,'P20',JntsPA,'LX',LX,'LY',LY,...
+    'AR',AR,'pxpm',pxpm,'err',err,'stdL',stdLgth,'mL',meanLgth,'ld25',l_d25,'ld50',l_d50,'ld75',l_d75)
 
-msLogi = msLogi(ftNAN)
-mxLogi = mxLogi(ftNAN)
-stLogi = stLogi(ftNAN)
-nstLogi = nstLogi(ftNAN)
+dataM = [dataS.P21',dataS.P20',dataS.P10',dataS.I20',dataS.mL']
 
-close all
-f1 = figure(1)
+logiS = struct('ms',msLogi,'mx',mxLogi,'pt',ptLogi,'st',stLogi,'nst',nstLogi)
 
-
-GLnum = glaciers(ftNAN)
-labs = labels(ftNAN)
-
-x = JntLgthPA(ftNAN)
-y = meanFreq(ftNAN)
-plot(x(logical(stLogi.*msLogi)),y(logical(stLogi.*msLogi)),...
-    'o','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-plot(x(logical(stLogi.*mxLogi)),y(logical(stLogi.*mxLogi)),...
-    '^','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-plot(x(logical(nstLogi.*msLogi)),y(logical(nstLogi.*msLogi)),...
-    'o','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-hold on
-plot(x(logical(nstLogi.*mxLogi)),y(logical(nstLogi.*mxLogi)),...
-    '^','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-
-
-
-xls = get(gca,'xlim')
-dxls = (xls(2)-xls(1))/80
-for i = 1:length(GLnum)
-    text(x(i)+dxls,y(i),labs{i}, 'fontsize',10)
-end
-
-% for i = 1:length(freqX)
-%     hold on 
-%     plot([freqX(i)-dxls, freqX(i)+dxls], [freqL(i) freqL(i)], 'k', 'linewidth', 2)
-% end
-    
-grid on
-xlabel('P_{21}')
-ylabel('P_{10}')
-% xlim([0 22])
-% set(gca,'xtick',[0:22])
-set(gca,'fontsize',18)
-% savePDFfunction(f1,'D:\Code\photog_allSets\figures\njVsArea')
 return
-%% six subplots
+
+
+%% here's to make an xy plot
+
+    
+logOn = 0
+legs = 1
+x = dataS.mL
+xlab = 'Mean length (m)'
+y = dataS.stdL
+ylab = 'Standard deviation in length (m)'
 
 close all
-f1 = figure(1)
-fs = 12
-ms = 6
+f1 = figure(1) 
 
-ftNAN = (isnan(maxFreq)==0)
-
-GLnum = glaciers(ftNAN)
-labs = labels(ftNAN)
+xyScat(x,y,dataS,logiS,labels,xlab,ylab,legs,logOn)
+savePDFfunction(f1,'D:\Code\photog_allSets\figures\scatter_stdLvsmL')
 
 
-subplot(3,2,1)
-x = JntLgthPA(ftNAN)
-y = meanFreq(ftNAN)
-h1 = plot(x(logical(stLogi.*msLogi)),y(logical(stLogi.*msLogi)),...
-    'o','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-h2 = plot(x(logical(stLogi.*mxLogi)),y(logical(stLogi.*mxLogi)),...
-    '^','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-h3 = plot(x(logical(nstLogi.*msLogi)),y(logical(nstLogi.*msLogi)),...
-    'o','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-hold on
-h4 = plot(x(logical(nstLogi.*mxLogi)),y(logical(nstLogi.*mxLogi)),...
-    '^','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
+return
+%% here's to make subplot scatter
 
-
-l1 = legend([h1 h2 h3 h4],{'MSS','MXS','MSNS','MXNS'},'location','southeast')
-
-xls = get(gca,'xlim')
-dxls = (xls(2)-xls(1))/80
-for i = 1:length(GLnum)
-    text(x(i)+dxls,y(i),labs{i}, 'fontsize',10)
-end
-grid on
-xlabel('P_{21} (m^{-1})')
-ylabel('frequency (m^{-1})')
-set(gca,'fontsize',fs)
-
-
-
-
-subplot(3,2,2)
-x = JntsPA(ftNAN)
-y = JntLgthPA(ftNAN)
-plot(x(logical(stLogi.*msLogi)),y(logical(stLogi.*msLogi)),...
-    'o','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-plot(x(logical(stLogi.*mxLogi)),y(logical(stLogi.*mxLogi)),...
-    '^','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-plot(x(logical(nstLogi.*msLogi)),y(logical(nstLogi.*msLogi)),...
-    'o','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-hold on
-plot(x(logical(nstLogi.*mxLogi)),y(logical(nstLogi.*mxLogi)),...
-    '^','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-
-xls = get(gca,'xlim')
-dxls = (xls(2)-xls(1))/80
-for i = 1:length(GLnum)
-    text(x(i)+dxls,y(i),labs{i}, 'fontsize',10)
-end
-grid on
-xlabel('P_{20} (m^{-2})')
-ylabel('P_{21} (m^{-1})')
-set(gca,'fontsize',fs)
-
-
-subplot(3,2,3)
-x = JntsPA(ftNAN)
-y = meanFreq(ftNAN)
-plot(x(logical(stLogi.*msLogi)),y(logical(stLogi.*msLogi)),...
-    'o','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-plot(x(logical(stLogi.*mxLogi)),y(logical(stLogi.*mxLogi)),...
-    '^','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-plot(x(logical(nstLogi.*msLogi)),y(logical(nstLogi.*msLogi)),...
-    'o','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-hold on
-plot(x(logical(nstLogi.*mxLogi)),y(logical(nstLogi.*mxLogi)),...
-    '^','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-
-xls = get(gca,'xlim')
-dxls = (xls(2)-xls(1))/80
-for i = 1:length(GLnum)
-    text(x(i)+dxls,y(i),labs{i}, 'fontsize',10)
-end
-grid on
-xlabel('P_{20} (m^{-2})')
-ylabel('frequency (m^{-1})')
-set(gca,'fontsize',fs)
-
-
-subplot(3,2,4)
-x = JntLgthPA(ftNAN)
-y = IntPA(ftNAN)
-plot(x(logical(stLogi.*msLogi)),y(logical(stLogi.*msLogi)),...
-    'o','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-plot(x(logical(stLogi.*mxLogi)),y(logical(stLogi.*mxLogi)),...
-    '^','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-plot(x(logical(nstLogi.*msLogi)),y(logical(nstLogi.*msLogi)),...
-    'o','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-hold on
-plot(x(logical(nstLogi.*mxLogi)),y(logical(nstLogi.*mxLogi)),...
-    '^','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-
-xls = get(gca,'xlim')
-dxls = (xls(2)-xls(1))/80
-for i = 1:length(GLnum)
-    text(x(i)+dxls,y(i),labs{i}, 'fontsize',10)
-end
-grid on
-xlabel('P_{21} (m^{-1})')
-ylabel('int/A (m^{-2})')
-set(gca,'fontsize',fs)
-
-subplot(3,2,5)
-x = IntPA(ftNAN)
-y = meanFreq(ftNAN)
-plot(x(logical(stLogi.*msLogi)),y(logical(stLogi.*msLogi)),...
-    'o','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-plot(x(logical(stLogi.*mxLogi)),y(logical(stLogi.*mxLogi)),...
-    '^','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-plot(x(logical(nstLogi.*msLogi)),y(logical(nstLogi.*msLogi)),...
-    'o','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-hold on
-plot(x(logical(nstLogi.*mxLogi)),y(logical(nstLogi.*mxLogi)),...
-    '^','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-
-xls = get(gca,'xlim')
-dxls = (xls(2)-xls(1))/80
-for i = 1:length(GLnum)
-    text(x(i)+dxls,y(i),labs{i}, 'fontsize',10)
-end
-grid on
-xlabel('int/A (m^{-2})')
-ylabel('frequency (m^{-1})')
-set(gca,'fontsize',fs)
-
-
-subplot(3,2,6)
-x = IntPA(ftNAN)
-y = JntsPA(ftNAN)
-plot(x(logical(stLogi.*msLogi)),y(logical(stLogi.*msLogi)),...
-    'o','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-plot(x(logical(stLogi.*mxLogi)),y(logical(stLogi.*mxLogi)),...
-    '^','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-plot(x(logical(nstLogi.*msLogi)),y(logical(nstLogi.*msLogi)),...
-    'o','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-hold on
-plot(x(logical(nstLogi.*mxLogi)),y(logical(nstLogi.*mxLogi)),...
-    '^','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-
-xls = get(gca,'xlim')
-dxls = (xls(2)-xls(1))/80
-for i = 1:length(GLnum)
-    text(x(i)+dxls,y(i),labs{i}, 'fontsize',10)
-end
-grid on
-xlabel('int/A (m^{-2})')
-ylabel('P_{20} (m^{-2})')
-set(gca,'fontsize',fs)
-
-savePDFfunction(f1,'D:\Code\photog_allSets\figures\sixPlot')
-
-%% six subplots in log space
+logOn = 0
+legs = 0
 
 close all
-f1 = figure(1)
-fs = 10
-ms = 6
+f1 = figure(1) 
 
-ftNAN = (isnan(maxFreq)==0)
+plotLabs = {'P_{21} (m^{-1})','P_{20} (m^{-2})','P_{10} (m^{-1})','I_{20} (m^{-2})'}
 
-GLnum = glaciers(ftNAN)
-labs = labels(ftNAN)
-
-
-subplot(3,2,1)
-x = log(JntLgthPA(ftNAN))
-y = log(meanFreq(ftNAN))
-h1 = plot(x(logical(stLogi.*msLogi)),y(logical(stLogi.*msLogi)),...
-    'o','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-h2 = plot(x(logical(stLogi.*mxLogi)),y(logical(stLogi.*mxLogi)),...
-    '^','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-h3 = plot(x(logical(nstLogi.*msLogi)),y(logical(nstLogi.*msLogi)),...
-    'o','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-hold on
-h4 = plot(x(logical(nstLogi.*mxLogi)),y(logical(nstLogi.*mxLogi)),...
-    '^','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-
-l1 = legend([h1 h2 h3 h4],{'MSS','MXS','MSNS','MXNS'},'location','southeast')
-
-xls = get(gca,'xlim')
-dxls = (xls(2)-xls(1))/80
-for i = 1:length(GLnum)
-    text(x(i)+dxls,y(i),labs{i}, 'fontsize',10)
+count = 1
+for i = 1:3
+    for j = i+1:4
+        subplot(3,2,count)
+        if i == 1 && j == 2
+            legs = 1
+        else 
+            legs = 0
+        end
+        x = (dataM(:,i))
+        y = (dataM(:,j))
+        xyScat(x,y,dataS,logiS,labels,plotLabs{i},plotLabs{j},legs,logOn)
+        count = count+1
+    end
 end
-grid on
-xlabel('log(P_{21} (m^{-1}))')
-ylabel('log(frequency (m^{-1}))')
-set(gca,'fontsize',fs)
+
+savePDFfunction(f1,'D:\Code\photog_allSets\figures\scatter_6plot')
 
 
-subplot(3,2,2)
-x = log(JntsPA(ftNAN))
-y = log(JntLgthPA(ftNAN))
-h1 = plot(x(logical(stLogi.*msLogi)),y(logical(stLogi.*msLogi)),...
-    'o','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-h2 = plot(x(logical(stLogi.*mxLogi)),y(logical(stLogi.*mxLogi)),...
-    '^','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-h3 = plot(x(logical(nstLogi.*msLogi)),y(logical(nstLogi.*msLogi)),...
-    'o','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-hold on
-h4 = plot(x(logical(nstLogi.*mxLogi)),y(logical(nstLogi.*mxLogi)),...
-    '^','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-
-xls = get(gca,'xlim')
-dxls = (xls(2)-xls(1))/80
-for i = 1:length(GLnum)
-    text(x(i)+dxls,y(i),labs{i}, 'fontsize',10)
-end
-grid on
-xlabel('log(P_{20} (m^{-2}))')
-ylabel('log(P_{21} (m^{-1}))')
-set(gca,'fontsize',fs)
-
-
-subplot(3,2,3)
-x = log(JntsPA(ftNAN))
-y = log(meanFreq(ftNAN))
-h1 = plot(x(logical(stLogi.*msLogi)),y(logical(stLogi.*msLogi)),...
-    'o','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-h2 = plot(x(logical(stLogi.*mxLogi)),y(logical(stLogi.*mxLogi)),...
-    '^','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-h3 = plot(x(logical(nstLogi.*msLogi)),y(logical(nstLogi.*msLogi)),...
-    'o','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-hold on
-h4 = plot(x(logical(nstLogi.*mxLogi)),y(logical(nstLogi.*mxLogi)),...
-    '^','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-
-xls = get(gca,'xlim')
-dxls = (xls(2)-xls(1))/80
-for i = 1:length(GLnum)
-    text(x(i)+dxls,y(i),labs{i}, 'fontsize',10)
-end
-grid on
-xlabel('log(P_{20} (m^{-2}))')
-ylabel('log(frequency (m^{-1}))')
-set(gca,'fontsize',fs)
-
-
-subplot(3,2,4)
-x = log(JntLgthPA(ftNAN))
-y = log(IntPA(ftNAN))
-h1 = plot(x(logical(stLogi.*msLogi)),y(logical(stLogi.*msLogi)),...
-    'o','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-h2 = plot(x(logical(stLogi.*mxLogi)),y(logical(stLogi.*mxLogi)),...
-    '^','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-h3 = plot(x(logical(nstLogi.*msLogi)),y(logical(nstLogi.*msLogi)),...
-    'o','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-hold on
-h4 = plot(x(logical(nstLogi.*mxLogi)),y(logical(nstLogi.*mxLogi)),...
-    '^','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-
-xls = get(gca,'xlim')
-dxls = (xls(2)-xls(1))/80
-for i = 1:length(GLnum)
-    text(x(i)+dxls,y(i),labs{i}, 'fontsize',10)
-end
-grid on
-xlabel('log(P_{21} (m^{-1}))')
-ylabel('log(int/A (m^{-2}))')
-set(gca,'fontsize',fs)
-
-subplot(3,2,5)
-x = log(IntPA(ftNAN))
-y = log(meanFreq(ftNAN))
-h1 = plot(x(logical(stLogi.*msLogi)),y(logical(stLogi.*msLogi)),...
-    'o','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-h2 = plot(x(logical(stLogi.*mxLogi)),y(logical(stLogi.*mxLogi)),...
-    '^','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-h3 = plot(x(logical(nstLogi.*msLogi)),y(logical(nstLogi.*msLogi)),...
-    'o','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-hold on
-h4 = plot(x(logical(nstLogi.*mxLogi)),y(logical(nstLogi.*mxLogi)),...
-    '^','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-
-xls = get(gca,'xlim')
-dxls = (xls(2)-xls(1))/80
-for i = 1:length(GLnum)
-    text(x(i)+dxls,y(i),labs{i}, 'fontsize',10)
-end
-grid on
-xlabel('log(int/A (m^{-2}))')
-ylabel('log(frequency (m^{-1}))')
-set(gca,'fontsize',fs)
-
-
-subplot(3,2,6)
-x = log(IntPA(ftNAN))
-y = log(JntsPA(ftNAN))
-h1 = plot(x(logical(stLogi.*msLogi)),y(logical(stLogi.*msLogi)),...
-    'o','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-h2 = plot(x(logical(stLogi.*mxLogi)),y(logical(stLogi.*mxLogi)),...
-    '^','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-h3 = plot(x(logical(nstLogi.*msLogi)),y(logical(nstLogi.*msLogi)),...
-    'o','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-hold on
-h4 = plot(x(logical(nstLogi.*mxLogi)),y(logical(nstLogi.*mxLogi)),...
-    '^','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-
-xls = get(gca,'xlim')
-dxls = (xls(2)-xls(1))/80
-for i = 1:length(GLnum)
-    text(x(i)+dxls,y(i),labs{i}, 'fontsize',10)
-end
-grid on
-xlabel('log(int/A (m^{-2}))')
-ylabel('log(P_{20} (m^{-2}))')
-set(gca,'fontsize',fs)
-
-savePDFfunction(f1,'D:\Code\photog_allSets\figures\log_sixPlot')
-
-
-
+return
 %% plot the min max frequency bars
 close all
-f1 = figure(2)
-ftNAN = (isnan(maxFreq)==0)
+logOn = 0
+legs = 1
+f3 = figure(3)
 
-GLnum = glaciers(ftNAN)
-labs = labels(ftNAN)
+yl = (dataS.ld25) 
+yu = (dataS.ld75) 
+x = (dataS.mL)
+y = (dataS.ld50)
+hold on
+% xyScat_err(x,y,dataS.err)
 
-x = JntLgthPA(ftNAN)
-y = meanFreq(ftNAN)
-yu = maxFreq(ftNAN)
-yl = minFreq(ftNAN)
-freqL = [yu,yl]
-freqX = [x,x]
+% hold on
+xyScat_freq(x,yl,yu)
+
+xlab = 'Mean length (m)'
+ylab = 'Length quantiles_{[0.25, 0.50, 0.75]} (m)'
+
+hold on
+xyScat(x,y,dataS,logiS,labels,xlab,ylab,legs,logOn)
+% hold on
+% plot(x,log(dataS.ld50),'ks','markersize',8,'markerfacecolor','k')
+rl = refline(1,0)
+rl.Color = [0 0 0]
+hasbehavior(rl,'legend',false)
+
+savePDFfunction(f3,'D:\Code\photog_allSets\figures\scatter_quantilesvsMean')
+return
+
+%% plot results by group 
+
+logOn = 0
+legs = 1
+
+x = []
+y = dataS.ld50
+ylab = 'Median length (m)'
+
+close all
+f4 = figure(4) 
+
+xlab = []
+yScat(x,y,dataS,logiS,labels,xlab,ylab,legs,logOn)
+
+
+savePDFfunction(f4,'D:\Code\photog_allSets\figures\group_medLgth')
 
 
 
+%% plot results by group 4 plot
 
-xls = get(gca,'xlim')
-dxls = (xls(2)-xls(1))/80
-for i = 1:length(GLnum)
-%     text(x(i)+dxls,y(i),labs{i}, 'fontsize',16)
-    hold on 
-    plot([x(i), x(i)], [yu(i) yl(i)], 'k', 'linewidth', 2)
-end
+logOn = 0
+legs = 1
+x = [1:5]
+xlab = 'group'
+y = dataS.P21
+ylab = 'P_{21} (m^{-1})'
 
-for i = 1:length(freqX)
-    hold on 
-    plot([freqX(i)-dxls, freqX(i)+dxls], [freqL(i) freqL(i)], 'k', 'linewidth', 2)
-end
+close all
+f4 = figure(4) 
+
+for i = 1:5
     
+    subplot(2,3,i)
+
+    y = (dataM(:,i))
+
+    plotLabs = {'P_{21} (m^{-1})','P_{20} (m^{-2})','P_{10} (m^{-1})','I_{20} (m^{-2})','mean length (m)'}
+    
+    xlab = []
+    ylab = plotLabs{i}
+    yScat(x,y,dataS,logiS,labels,xlab,ylab,legs,logOn)
+    
+end
+
+savePDFfunction(f4,'D:\Code\photog_allSets\figures\group_5plot')
+
+%% here you can do some statistics
+
+%%% univariate tukey HSD
+
+close all
+[p,anovatab,stats] = anova1(dataS.mL,group_4)
+[c,m,h,nms] = multcompare(stats,'ctype','hsd','alpha',0.1)
+title('mean')
+
+%% qq plot
+
+dataM = (dataM)
+corDat = corr(dataM)
+covDat = cov(dataM)
+n = length(dataM(:,1))
+pvars = length(dataM(1,:))
+mu = mean(dataM)
+sinv = inv(covDat)
+
+for i = 1:n
+    
+    a = dataM(i,:)-mu
+    d(i) = a*sinv*a'
+
+end
+
+[ds,srt] = sort(d)
+ps = ([1:n]-0.5)/n
+qs = chi2inv(ps,pvars)
+
+ylab = '$d_{(j)}^2$'
+xlab = '$q_{c,16}((j-\frac{1}{2})/n)$'
+
+logiS.ms = logiS.ms(srt)
+logiS.mx = logiS.mx(srt)
+logiS.st = logiS.st(srt)
+logiS.nst = logiS.nst(srt)
+logiS.pt = logiS.pt(srt)
+
+close all
+f5 = figure(5)
+legs = 1
+logOn = 0
+xyScat(qs,ds,dataS,logiS,labels(srt),xlab,ylab,legs,logOn)
 hold on
-h1 = plot(x(logical(stLogi.*msLogi)),y(logical(stLogi.*msLogi)),...
-    'o','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-h2 = plot(x(logical(stLogi.*mxLogi)),y(logical(stLogi.*mxLogi)),...
-    '^','markerfacecolor',[1 0 0],'markersize',10,'markeredgecolor','k')
-hold on
-h3 = plot(x(logical(nstLogi.*msLogi)),y(logical(nstLogi.*msLogi)),...
-    'o','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
-hold on
-h4 = plot(x(logical(nstLogi.*mxLogi)),y(logical(nstLogi.*mxLogi)),...
-    '^','markerfacecolor',[0.6 0.6 0.6],'markersize',10,'markeredgecolor','k')
+hline = refline(1,0)
+hasbehavior(hline,'legend',false)
+
+title('Chi-square plot on raw data','fontsize',18)
+
+savePDFfunction(f5,'D:\Code\photog_allSets\figures\qqplot')
 
 
-grid on
-xlabel('P_{21}')
-ylabel('P_{10} (m^{-1})')
-% xlim([0 22])
-% set(gca,'xtick',[0:22])
-set(gca,'fontsize',18)
-savePDFfunction(f1,'D:\Code\photog_allSets\figures\p21Vsfreq')
 
 
-%% here's some more nasty mess where you might decide to do some PCA
-% 
-% glaciers = dat(strcmp(vars,'Glacier'),:); 
-% labels = written(2,2:end); 
-% maxFreq = dat(strcmp(vars,'max freq'),:);
-% minFreq = dat(strcmp(vars,'min freq'),:) ;
-% meanFreq = dat(strcmp(vars,'mean freq'),:);
-% numJnts = dat(strcmp(vars,'num joints'),:);
-% totJntLength = dat(strcmp(vars,'total joint length'),:);
-% numInts = dat(strcmp(vars,'intersections'),:);
-% IntPA = dat(strcmp(vars,'intersectionsPerarea'),:);
-% JntLgthPA = dat(strcmp(vars,'joint lengthPerarea'),:);
-% JntsPA = dat(strcmp(vars,'jointsPerarea'),:)
-% LX = dat(strcmp(vars,'length x (m)'),:);
-% LY = dat(strcmp(vars,'length y (m)'),:);
-% AR = dat(strcmp(vars,'area (m2)'),:);
-% pxpm = dat(strcmp(vars,'scale factor (px/m)'),:);
 
-maxFreq = [maxFreq(ftNAN)]'
-minFreq = [minFreq(ftNAN)]'
-meanFreq = [meanFreq(ftNAN)]'
-JntLgthPA = [JntLgthPA(ftNAN)]'
-JntsPA = [JntsPA(ftNAN)]'
 
-X = [maxFreq,minFreq,meanFreq,JntLgthPA,JntsPA]
 
-princomp(X')
 
 
 
