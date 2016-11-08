@@ -16,12 +16,12 @@ minx = min(mnx)
 maxx = max(mxx)
 
 
-% xlim([minx maxx]);
-% ylim([miny maxy]);
-% 
-% scales = 1/(msfc);
-% length_x = (maxx-minx)/(scales);
-% length_y = (maxy-miny)/(scales);
-% area_xy = (length_x*length_y);
-% 
+xlim([minx maxx]);
+ylim([miny maxy]);
+
+scales = 1/(msfc);
+length_x = (maxx-minx)/(scales);
+length_y = (maxy-miny)/(scales);
+area_xy = (length_x*length_y);
+
 % save([folder subFolder 'results.mat'],'length_x','length_y','area_xy')

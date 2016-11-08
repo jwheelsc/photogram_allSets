@@ -7,7 +7,7 @@ close all
 % load(folderStr)
 
 %%
-% thetaA = [5:5:175];
+% thetaA = [1:5:176];
 
 jset = []
 
@@ -66,7 +66,7 @@ mean_fq = mean(m_fq)
 
 fs2 = 12
 f1 = figure(1)
-    h1 = plot(thetaA,m_fq,'r-o')
+    h1 = plot(thetaA,fq,'r-o')
         mxy = max(m_fq)
         el = find(m_fq==mxy)
         mxx = thetaA(el)
@@ -91,7 +91,7 @@ f1 = figure(1)
     legend([h1 ], {'mean spacing^{-1}'},...
         'location','southwest','fontsize',12)
     
-savePDFfunction(f1,[folder subFolder 'scanline_angle' imSave '_' hS])
+% savePDFfunction(f1,[folder subFolder 'scanline_angle' imSave '_' hS])
 save([folder subFolder 'results_' hS '.mat'],'mxx','mxy','mnx','mny','mean_fq',...
     'thetaA','fq','m_fq','fq_std')
 

@@ -7,19 +7,26 @@
 
 close all
 
+figure(1)
 for i = 1:length(allSets)
 % for i =282
     hold on
-    p = allSets{i};
-    ph(i)=plot(p(:,1)',p(:,2)','k','linewidth',1);
+    p = allSets{i}*msfc;
+    ph(i)=plot(p(:,1)',p(:,2)','r','linewidth',1);
 end
         
     
 
 %% how much does a set intersect itself?
 intPts = [];
+diffA = [];
+mli = 20;
+line_ix = zeros(length(allSets)-1,mli);
+line_iy = zeros(length(allSets)-1,mli);
+diffA_i = zeros(length(allSets)-1,mli);
+dLineAll = [];
 for i1 = 1:length(allSets)-1
-    j1 = allSets{i1};
+    j1 = allSets{i1}*msfc;
     j1x = j1(:,1);
     j1y = j1(:,2);
     
@@ -28,9 +35,10 @@ for i1 = 1:length(allSets)-1
     m1(isnan(m1)) = 0;
     b1 = j1y(2:end)-(j1x(2:end).*m1);
     l1 = length(b1);
-
+    
+    count_j = 1;
     for i2 = i1+1:length(allSets)
-        j2 = allSets{i2};
+        j2 = allSets{i2}*msfc;
         j2x = j2(:,1);
         j2y = j2(:,2);   
         
@@ -58,8 +66,7 @@ for i1 = 1:length(allSets)-1
         x2u = repmat([j2x(2:end)]',[l1,1]);
         y2l = repmat([j2y(1:end-1)]',[l1,1]);
         y2u = repmat([j2y(2:end)]',[l1,1]);
-        
-        
+ 
         
         xi = (b2m-b1m)./(m1m-m2m);
         yi = m2m.*xi+b2m;
@@ -86,114 +93,90 @@ for i1 = 1:length(allSets)-1
         if isempty(xI)==0
             xI = xI(1);
             yI = yI(1);
+            m1i = m1m(logiT);
+            m2i = m2m(logiT);
+            dA = abs(atand(m2i)-atand(m1i));
+            d2A = [dA,180-dA];
+            d2A = d2A(1,:);
+            diffA = [diffA,min(d2A)];
+            intPts = [intPts;[xI,yI]];
+            diffA_i(i1,count_j) = min(d2A);
+            line_iy(i1,count_j) = yI;
+            line_ix(i1,count_j) = xI;
+            count_j = count_j+1;
+%             count = count+1;
         end
+
+    end
+    
+    %%% here you are trying to track the intersection angles
+    intAi = diffA_i(i1,:);
+    iy = line_iy(i1,:);
+    iy= iy(iy~=0);
+    ix = line_ix(i1,:);
+    ix = ix(ix~=0);
+    [ix,sx] = sort(ix);
+    iy = iy(sx);
+    sum_ix = sum(ix~=0);
+    
+    if sum_ix == 1
         
-        intPts = [intPts;[xI,yI]];
+        dh = (sqrt((j1x(end)-j1x(1))^2+(j1y(end)-j1y(1))^2))/2;
+        dLineAll = [dLineAll,dh];
         
+    elseif sum_ix>1
+    
+        L = sum_ix
+        diffx = ix(2:end)-ix(1:end-1);
+        diffy = iy(2:end)-iy(1:end-1);
+        d = sqrt(diffx.^2+diffy.^2);
+        d_ave = (d(1:end-1)+d(2:end))/2;
+        dLine = [d(1),d_ave,d(end)];
+        dLineAll = [dLineAll,dLine];
         
     end
+%     hold on
+%     plot(ix(ix~=0),iy(ix~=0),'ro')
+%     
     i1
 end
 
-hold on
-plot(intPts(:,1),intPts(:,2),'b.','markersize',10)
-f1 = gcf
-savePDFfunction(f1,[folder subFolder 'intersect' imSave])
-totalints = length(intPts(:,1))
-save([folder subFolder 'results_intersections.mat'],'totalints','intPts')
-    
-%     
-%         
-%         for i2a = 1:length(j2x)-1
-%             m2 = (j2y(i2a+1)-j2y(i2a))./(j2x(i2a+1)-j2x(i2a));
-%             m2(isinf(m2)) = 1e3;
-%             m2(isnan(m2)) = 0;
-%             b2 = j2y(i2a+1)-(j2x(i2a+1).*m2);
-%             xi = (b2-b1)./(m1-m2);
-%             yi = m2.*(xi+b2);
-%             
-%             d1a = sqrt((xi-j1x(1:end-1)).^2+(yi-j1y(1:end-1)).^2);
-%             d1b = sqrt(((xi-j1x(2:end)).^2)+((yi-j1y(2:end)).^2));
-%             d1 = sqrt(((j1x(1:end-1)-j1x(2:end)).^2)+((j1y(1:end-1)-j1y(2:end)).^2)); 
-%             inBox1 = logical((d1a<d1).*(d1b<d1))
-%             
-%             d2a = sqrt(((xi-j2x(i2a+1)).^2)+((yi-j2y(i2a+1)).^2));
-%             d2b = sqrt(((xi-j2x(i2a)).^2)+((yi-j2y(i2a)).^2));
-%             d2 = sqrt(((j2x(i2a+1)-j2x(i2a)).^2)+((j2y(i2a+1)-j2y(i2a)).^2)); 
-%             inBox2 = logical((d2a<d2).*(d2b<d2))
-%             inBox = logical(inBox1.*inBox2);
-%             keyboard
-%             if sum(inBox)>=1
-%                 intPts = [intPts;[xi(inBox),yi(inBox)]];
-%                 keyboard
-%             end
-%                               
-%             
-%         end
-%               
-%     end
-%     
-%     i1
-% % end
-% 
-% hold on 
-% plot(intPts(:,1),intPts(:,2),'bo')
-% 
-% return
-% %%
-% intPts = []
-% count = 1
-% for i = 1:length(allSets)-1
-%     
-%     j1 = allSets{i};
-%     for j = i+1:length(allSets)
-%     
-%        j2 = allSets{j};
-%         
-%        jp1x = repmat(j1(:,1),[1,length(j2(:,1))])';
-%        jp2x = repmat(j2(:,1),[1,length(j1(:,1))]);  
-%        jp1y = repmat(j1(:,2),[1,length(j2(:,2))])';
-%        jp2y = repmat(j2(:,2),[1,length(j1(:,2))]);  
-% 
-%        dM = sqrt((jp2x-jp1x).^2+(jp2y-jp1y).^2);
-%        
-%        mdM = min(min(dM));
-%        [row,col] = find(abs(dM-mdM)<1e-3);
-%        row = row(end);
-%        col = col(end);
-%        if mdM < critical_d
-%            intPts(count,:) = j1(col,:);
-%            count = count+1;
-%        end
-%        
-%     end
-%     
-% end
-% 
-% save([folder subFolder 'setInt.mat'],'intPts')
-% totalints = length(intPts)
-% 
-% 
-% %%
-% load([folder subFolder 'setInt.mat'])
+f1 = figure(1)
+hold on 
+plot(intPts(:,1),intPts(:,2),'b.','markersize',8)
+axis equal
+set(gca,'Ydir','reverse')
+savePDFfunction(f1, 'D:\Documents\Writing\Thesis\geotech\figures\shapeAnalysis\jnts')
+%%
+angLfig = figure(2)
+[n,c] = hist3([dLineAll',diffA'],[20,20])
+% contour(c{1}(end:-1:1),c{2}(end:-1:1),n)
 % hold on
-% plot(intPts(:,1),intPts(:,2),'o')
-% 
-% f1 = gcf
-% savePDFfunction(f1,[folder subFolder 'intersect' imSave])
-% save([folder subFolder 'results_intersections.mat'],'totalints')
-% 
+% plot(dLineAll,diffA,'r.')
 
+n1 = n';
+n1(size(n,1) + 1, size(n,2) + 1) = 0;
+xb = linspace(min(dLineAll),max(dLineAll),size(n,1)+1);
+yb = linspace(min(diffA),max(diffA),size(n,1)+1);
+hpc = pcolor(xb,yb,n1);
 
+hpc.ZData = ones(size(n1)) * -max(max(n));
+cp = colormap(gray) % heat map
+colormap(flipud(cp));
+% grid on
+hold on
+plot(dLineAll,diffA,'r.','markersize',10);
+xlabel('Distance (m)');
+ylabel('Intersection angle (degrees)');
+% set(hpc, 'EdgeColor', 'none');
+set(gca,'fontsize',18)
+savePDFfunction(angLfig,[folder subFolder 'angVsLineLength'])
+%%
+figure
+hist(diffA,20)
+[pk,ct] = hist(diffA,20)
+[ma,elc] = max(pk)
+mode1 = ct(elc)
 
-
-
-
-
-
-
-
-
-
-
+mAng = [mean(diffA),median(diffA),mode1,mean(dLineAll)]'
 

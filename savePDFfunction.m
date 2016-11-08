@@ -2,8 +2,10 @@ function [] = savePDFfunction(fid, filename)
 
 f1 = fid;
 
-set(f1,'PaperOrientation','portrait');
-set(f1,'PaperUnits','inches');
-set(f1,'PaperPosition', [0 0 51 34]);
-print(f1,filename,'-djpeg','-r100')
+set(f1,'PaperOrientation','landscape');
+set(f1,'PaperUnits','normalized');
+set(f1,'PaperPosition', [0 0 1 1]);
+% print(f1,filename,'-djpeg',['-r' num2str(resi)])
+print(f1,filename,'-dpdf','-r0')
+
 

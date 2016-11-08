@@ -1,8 +1,8 @@
 function [] = yScat(x,y,dataS,logiS,labels,xlab,ylab,legs,logOn)
 
-ms = 10;
-fs = 12;
-tfs = fs-4
+ms = 12;
+fs = 22;
+tfs = 10
 txtOn = 0
 
 lg1 = logical(logiS.st.*logiS.ms)
@@ -17,7 +17,7 @@ h1 = plot(ones(1,length(y1))*1,y1,...
     end
 
 hold on
-lg2 = logical(logiS.st.*logiS.mx)
+lg2 = logical(logiS.st.*logiS.mx.*logiS.msR)
 y2 = y(lg2)
 h2 = plot(ones(1,length(y2))*2,y2,...
     '^','markerfacecolor',[1 0 0],'markersize',ms,'markeredgecolor','k')
@@ -42,7 +42,7 @@ h3 = plot(ones(1,length(y3))*3,y3,...
 
 
 hold on
-lg4 = logical(logiS.nst.*logiS.mx)
+lg4 = logical(logiS.nst.*logiS.mx.*logiS.msR)
 y4 = y(lg4)
 h4 = plot(ones(1,length(y4))*4,y4,...
     '^','markerfacecolor',[0.6 0.6 0.6],'markersize',ms,'markeredgecolor','k')
@@ -85,9 +85,9 @@ grid on
 set(gca,'xtick',[0:1:5],'xticklabel',{'','MS-S','MX-S','MS-NS','MX-NS', ''},'fontsize',fs)
 
 if logOn == 1
-%     xlabel(['log (' xlab ')'])
-    ylabel(['log (' ylab ')'])
+%     xlabel(['log (' xlab ')'],'fontsize',fs)
+    ylabel(['log (' ylab ')'],'fontsize',fs)
 else
-%     xlabel(xlab)
-    ylabel(ylab)
+%     xlabel(xlab,'fontsize',fs)
+    ylabel(ylab,'fontsize',fs)
 end

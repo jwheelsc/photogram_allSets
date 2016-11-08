@@ -30,6 +30,16 @@ hS = num2str(num_h)
 % thetaA = [1:5:186];
 
 for t = 1:length(thetaA)
+    
+    close all
+    f1 = figure('units','normalized','outerposition',[0 0 1 1])
+
+    for i = 1:length(allSets)
+    % for i =282
+        hold on
+        p = allSets{i};
+        ph(i)=plot(p(:,1)',p(:,2)','k-','linewidth',1);
+    end
 
     theta = thetaA(t)
     m_sl = tan(theta*pi/180); %slope in radians
@@ -178,10 +188,10 @@ for t = 1:length(thetaA)
         end
     end
 
-    pause(0.1)
 %     keyboard
 %     axis equal
     save([folder subFolder 'sl_pts_' num2str(theta) '_' setNum '_' hS '.mat'], 'set_int', 'line_length')
+%     keyboard
 end
 
 % savePDFfunction(f1,[folder subFolder 'scanline_intersect' imSave '_' hS])

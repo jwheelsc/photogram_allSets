@@ -172,6 +172,8 @@ savePDFfunction(f2,'D:\Code\photog_allSets\figures\factor_scores_noL')
 
 return
 
+%% trial PCA
+
 
 
 
